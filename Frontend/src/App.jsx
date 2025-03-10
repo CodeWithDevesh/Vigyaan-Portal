@@ -1,14 +1,19 @@
-import './App.css'
+import { BrowserRouter, Route, Routes } from "react-router";
+import "./App.css";
+import Home from "./pages/Home";
+import Navbar from "./components/navbar";
 
 function App() {
-
   return (
     <>
-    <div className="h-screen w-screen flex justify-center items-center bg-bg-2">
-      <h1 className='text-5xl font-bold text-secondary'>Hello World</h1>
-    </div>
+      <BrowserRouter>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />} />
+        </Routes>
+      </BrowserRouter>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
