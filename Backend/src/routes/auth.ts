@@ -19,7 +19,7 @@ let transporter = nodemailer.createTransport({
 });
 // **Sign-up Route** 
 /*
-tasks:
+todo:
  - Create a check for college mail ID compulsorily.
  -otp verification via email
 */
