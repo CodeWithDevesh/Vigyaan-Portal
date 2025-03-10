@@ -1,4 +1,5 @@
 import { Request, Response } from "express"
+import { notificationModel, projectModel, requestModel } from "../models/models";
 
 const projectRequest = async (req: Request, res: Response): Promise<any> => {
     const { project_id, requested_by } = req.body();
@@ -10,7 +11,7 @@ const projectRequest = async (req: Request, res: Response): Promise<any> => {
     }
 
     try {
-        const coll = db.collection("requestSchema")
+        const coll = requestModel;
         const alreadyExists = await coll.findOne({
             project_id: project_id,
             requested_by: requested_by
@@ -42,7 +43,7 @@ const sendDm = async (req: Request, res: Response): Promise<any> => {
     const { to, subject, message } = req.body()
 
     try {
-        const coll = db.collection("notificationSchema")
+        const coll = notificationModel;
 
         await coll.insertOne({
             user_id: "1",
@@ -66,7 +67,7 @@ const getProjects = async(req: Request, res: Response): Promise<any> => {
     const branch = req.query.branch
 
     try {
-        const coll = db.collection("projectSchema")
+        const coll = projectModel;
         await coll.find({})
 
         return res.json({
@@ -86,7 +87,7 @@ const getProject = async (req: Request, res: Response): Promise<any> => {
     const id = req.params.id
 
     try {
-        const coll = db.collection("projectSchema")
+        const coll = projectModel
         const project = await coll.findOne({
             id: id
         })
