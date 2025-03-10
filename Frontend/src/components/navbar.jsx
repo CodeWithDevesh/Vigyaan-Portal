@@ -1,103 +1,32 @@
 import React from "react";
-import "./Navbar.css";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import logo from "../assets/Images/logo.webp"
-export default function Navbar() {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+import logo from "../assets/Images/l.png";
+import { Link } from "react-router";
 
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
+function Navbar() {
   return (
-    <>
-      <div
-        className={isMenuOpen ? "underlay" : "underlay close"}
-        onClick={toggleMenu}
-      ></div>
-      <header className="nav-header">
-        <div className="logo">
-          <img src={logo} alt="" className="h-20 object-center object-contain"/>
+    <div className="h-[80px] grid grid-cols-3 items-center justify-items-center px-3 fixed top-0 left-0 right-0 text-2xl font-bold">
+      <div className="justify-self-start">
+        <img className="h-[60px]" src={logo} alt="" />
+      </div>
+      <div className="flex space-x-7 ml-7">
+        <div className="nav-item-cont">
+          <Link to={"/"} className="nav-item rotate-3">
+            Home
+          </Link>
         </div>
-        <nav>
-          <ul>
-            <li>
-              <Link className="hover-effect" to="/">
-                Home
-              </Link>
-            </li>
-            <li className="resources">
-              <Link className="hover-effect" to="/resources">
-                Resources
-              </Link>
-            </li>
-            <li>
-              <Link className="hover-effect" to="/aboutus">
-                About Us
-              </Link>
-            </li>
-            <li>
-              <Link className="hover-effect" to="/contribute">
-                Contribute
-              </Link>
-            </li>
-          </ul>
-          <div
-            className={isMenuOpen ? "hamburger" : "hamburger close"}
-            onClick={toggleMenu}
-          >
-            <svg
-              width="800px"
-              height="800px"
-              viewBox="0 0 24 24"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                d="M4 18L20 18"
-                stroke="#000000"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M4 12L20 12"
-                stroke="#000000"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-              <path
-                d="M4 6L20 6"
-                stroke="#000000"
-                strokeWidth="2"
-                strokeLinecap="round"
-              />
-            </svg>
-          </div>
-        </nav>
-        <div
-          className={isMenuOpen ? "hamburger-cont" : "hamburger-cont close"}
-          onClick={toggleMenu}
-        >
-          <HamburgerMenu />
+
+        <div className="nav-item-cont">
+          <Link to={"/projects"} className="nav-item rotate-[-5deg]">
+            Projects
+          </Link>
         </div>
-      </header>
-    </>
+      </div>
+
+      <div className="justify-self-end mr-4 text-secondary bg-tertiary py-1 px-[10px] rounded-[4px] hover:scale-110 active:scale-90 transition-all" style={{boxShadow: "4px 5px 5px rgba(0, 0, 0, .5)"}}>
+        <Link to={"/login"}>Log In</Link>
+      </div>
+    </div>
   );
 }
 
-function HamburgerMenu() {
-  const navigate = useNavigate();
-  return (
-    <>
-      <ul>
-        <li onClick={() => navigate("/")}>Home</li>
-        <li className="resources" onClick={() => navigate("/resources")}>
-          Resources
-        </li>
-        <li onClick={() => navigate("/aboutus")}>About Us</li>
-        <li onClick={() => navigate("/contribute")}>Contribute</li>
-      </ul>
-    </>
-  );
-}
+export default Navbar;

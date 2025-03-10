@@ -1,13 +1,50 @@
-*, *::after, *::before {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  user-select: none;
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #0C090D;
+  --color-secondary: #490D08;
+  --color-tertiary: #95DBD9;
+  --color-bg-1: #CAE9FF;
+  --color-bg-2: #BEE9E8;
 }
 
-body{
+body {
   width: 100vw;
   height: fit-content;
   overflow-x: hidden;
   background-color: var(--color-bg-1);
+}
+
+.nav-item {
+  color: var(--color-primary);
+  padding: 4px 10px;
+  background-color: var(--color-bg-2);
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, .5);
+  border-radius: 5px;
+  cursor: pointer;
+  display: inline-block;
+  transform: none;
+}
+
+.nav-item-cont {
+  position: relative;
+  transition: all .3s ease;
+}
+
+.nav-item-cont:hover{
+  scale: 1.1;
+}
+.nav-item-cont:active{
+  transform: translateY(10px);
+}
+
+.nav-item-cont::before {
+  content: "";
+  position: absolute;
+  width: 2px;
+  border: 2px solid var(--color-primary);
+  bottom: 0;
+  left: 50%;
+  z-index: -1;
+  height: 500px;
 }
