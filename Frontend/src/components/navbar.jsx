@@ -22,7 +22,7 @@ function Navbar() {
         </div>
       </div>
 
-      <div className="justify-self-end mr-4 text-secondary bg-tertiary py-1 px-[10px] rounded-[4px] hover:scale-110 active:scale-90 transition-all" style={{boxShadow: "4px 5px 5px rgba(0, 0, 0, .5)"}}>
+      <div className="justify-self-end mr-4 text-primary bg-bg-1 py-1 px-[10px] rounded-[4px] hover:scale-110 active:scale-90 transition-all" style={{boxShadow: "4px 5px 5px rgba(0, 0, 0, .5)"}}>
         <Link to={"/login"}>Log In</Link>
       </div>
     </div>
