@@ -93,7 +93,7 @@ function LoginForm() {
             type="submit"
             disabled={isLoading}
             className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary ${
-              isLoading ? "opacity-50 cursor-not-allowed" : ""
+              isLoading ? "opacity-50 cursor-not-allowed" : " cursor-pointer"
             }`}
           >
             {isLoading ? "Signing in..." : "Sign in"}
