@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Link } from "react-router";
 
 // Heroicons (import as needed)
 const UserIcon = () => (
@@ -146,12 +147,12 @@ const Signup = ({ onClose = () => {} }) => {
   };
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-lg w-full max-w-sm overflow-hidden">
+    <div className="min-h-[80vh] w-screen mt-[100px] flex items-center justify-center bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-[0px_35px_35px_rgba(0,0,0,0.4)] w-full max-w-sm overflow-hidden">
         {/* Progress Bar */}
         <div className="w-full h-1 bg-gray-200">
           <div
-            className={`h-1 bg-black transition-all duration-500 ease-in-out ${
+            className={`h-1 bg-primary transition-all duration-500 ease-in-out ${
               step === 1 ? "w-1/2" : "w-full"
             }`}
           ></div>
@@ -159,7 +160,7 @@ const Signup = ({ onClose = () => {} }) => {
 
         {/* Modal Header */}
         <div className="p-6">
-          <h2 className="text-xl font-bold text-black">
+          <h2 className="text-xl font-bold text-primary">
             {step === 1 ? "Create an Account" : "Verify Your Email"}
           </h2>
           <p className="text-sm text-gray-600 mt-1">
@@ -183,7 +184,10 @@ const Signup = ({ onClose = () => {} }) => {
             <div className="space-y-4">
               {/* Name Field */}
               <div className="space-y-1">
-                <label htmlFor="name" className="text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="name"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Full Name
                 </label>
                 <div className="relative">
@@ -204,7 +208,10 @@ const Signup = ({ onClose = () => {} }) => {
 
               {/* Email Field */}
               <div className="space-y-1">
-                <label htmlFor="email" className="text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="email"
+                  className="text-sm font-medium text-gray-700"
+                >
                   College Email
                 </label>
                 <div className="relative">
@@ -226,7 +233,10 @@ const Signup = ({ onClose = () => {} }) => {
 
               {/* Password Field */}
               <div className="space-y-1">
-                <label htmlFor="password" className="text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="password"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Password
                 </label>
                 <div className="relative">
@@ -249,7 +259,10 @@ const Signup = ({ onClose = () => {} }) => {
               {/* Branch and Semester Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label htmlFor="branch" className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="branch"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Branch
                   </label>
                   <div className="relative">
@@ -259,7 +272,9 @@ const Signup = ({ onClose = () => {} }) => {
                     <select
                       id="branch"
                       value={formData.branch}
-                      onChange={(e) => handleSelectChange("branch", e.target.value)}
+                      onChange={(e) =>
+                        handleSelectChange("branch", e.target.value)
+                      }
                       className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
                     >
@@ -274,7 +289,10 @@ const Signup = ({ onClose = () => {} }) => {
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="sem" className="text-sm font-medium text-gray-700">
+                  <label
+                    htmlFor="sem"
+                    className="text-sm font-medium text-gray-700"
+                  >
                     Semester
                   </label>
                   <div className="relative">
@@ -284,7 +302,9 @@ const Signup = ({ onClose = () => {} }) => {
                     <select
                       id="sem"
                       value={formData.sem}
-                      onChange={(e) => handleSelectChange("sem", e.target.value)}
+                      onChange={(e) =>
+                        handleSelectChange("sem", e.target.value)
+                      }
                       className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
                     >
@@ -298,6 +318,12 @@ const Signup = ({ onClose = () => {} }) => {
                   </div>
                 </div>
               </div>
+                  <div className="flex justify-end mt-4 text-lg font-rubik gap-2">
+                    <p>Already have an account...</p>
+                    <Link to={"/login"} className="underline">
+                      Sign In
+                    </Link>
+                  </div>
             </div>
           ) : (
             <div className="space-y-4">
@@ -306,9 +332,12 @@ const Signup = ({ onClose = () => {} }) => {
                 <div className="flex items-start gap-3">
                   <CheckCircleIcon />
                   <div>
-                    <h4 className="font-medium text-black">Verification Required</h4>
+                    <h4 className="font-medium text-black">
+                      Verification Required
+                    </h4>
                     <p className="text-sm text-gray-600">
-                      We've sent a 6-digit code to <span className="font-medium">{formData.email}</span>
+                      We've sent a 6-digit code to{" "}
+                      <span className="font-medium">{formData.email}</span>
                     </p>
                   </div>
                 </div>
@@ -316,7 +345,10 @@ const Signup = ({ onClose = () => {} }) => {
 
               {/* OTP Field */}
               <div className="space-y-1">
-                <label htmlFor="otp" className="text-sm font-medium text-gray-700">
+                <label
+                  htmlFor="otp"
+                  className="text-sm font-medium text-gray-700"
+                >
                   Verification Code
                 </label>
                 <input
@@ -330,7 +362,10 @@ const Signup = ({ onClose = () => {} }) => {
                 />
                 <p className="text-sm text-gray-500 text-center">
                   Didn't receive the code?{" "}
-                  <button type="button" className="text-black hover:text-gray-800">
+                  <button
+                    type="button"
+                    className="text-black hover:text-gray-800"
+                  >
                     Resend
                   </button>
                 </p>
@@ -345,7 +380,11 @@ const Signup = ({ onClose = () => {} }) => {
               disabled={isLoading}
               className="w-full py-2 px-4 rounded-md bg-black text-white font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black"
             >
-              {isLoading ? "Processing..." : step === 1 ? "Continue" : "Verify & Complete"}
+              {isLoading
+                ? "Processing..."
+                : step === 1
+                ? "Continue"
+                : "Verify & Complete"}
             </button>
           </div>
         </form>

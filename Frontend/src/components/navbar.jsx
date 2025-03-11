@@ -23,7 +23,7 @@ function Navbar() {
       </div>
 
       <div className="justify-self-end mr-4 bg-bg-1 py-1 px-[10px] rounded-2xl hover:scale-110 active:scale-90 transition-all text-xl" style={{boxShadow: "4px 5px 5px rgba(0, 0, 0, .3)"}}>
-        <Link to={"/login"}>Login</Link>
+        <Link to={"/login"}>Sign In</Link>
       </div>
     </div>
   );

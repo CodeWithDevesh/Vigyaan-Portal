@@ -10,9 +10,10 @@
   --color-primary: #141414;
   --color-secondary: #292929;
   --color-bg-1: #F5F5F5;
-  --color-bg-2: #F5F5F5;
-  --font-poppins: 'Poppins', snas-serif;
+  --color-bg-2: #FFFFFF;
+  --font-poppins: 'Poppins', sans-serif;
   --font-roboto: 'Roboto', sans-serif;
+  --font-rubik: 'Rubik', sans-serif;
 }
 
 body {
@@ -54,4 +55,27 @@ body {
   left: 50%;
   z-index: -1;
   height: 500px;
+}
+
+.login-mode {
+  padding: 4px 8px;
+  font-family: 'rubik', sans-serif;
+  font-weight: bold;
+  color: var(--color-secondary);
+  font-size: var(--text-xl);
+  line-height: var(--tw-leading, var(--text-xl--line-height));
+  background-color: var(--color-bg-2);
+  border-left: 2px solid var(--color-primary);
+  border-top: 2px solid var(--color-primary);
+  cursor: pointer;
+  width: fit-content;
+  transition: background-color 1s ease, color 1s ease, width 1s ease;
+  display: inline-block;
+}
+
+.login-selected {
+  width: 100%;
+  background-color: var(--color-primary);
+  color: var(--color-bg-2);
+  cursor: auto;
 }
