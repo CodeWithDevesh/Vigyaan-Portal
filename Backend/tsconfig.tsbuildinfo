@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/controllers/user.controller.ts","./src/db/db.ts","./src/middleware/checkauthentication.ts","./src/models/models.ts","./src/routes/auth.ts","./src/routes/routes.ts","./src/routes/user.ts"],"version":"5.8.2"}
+{"root":["./src/index.ts","./src/controllers/email.ts","./src/controllers/user.controller.ts","./src/db/db.ts","./src/middleware/checkauthentication.ts","./src/models/models.ts","./src/routes/auth.ts","./src/routes/routes.ts","./src/routes/user.ts"],"version":"5.8.2"}
