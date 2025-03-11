@@ -45,7 +45,9 @@ const userSchema = new mongoose.Schema(
     verified: {
       type: Boolean,
       default: false
-    }
+    },
+    resetToken: { type: String }, // Stores reset token
+    resetTokenExpires: { type: Date },
   },
   { timestamps: true }
 );
@@ -158,10 +160,10 @@ const notificationSchema = new mongoose.Schema(
 );
 
 const UserOTPVerificationSchema = new mongoose.Schema({
-  userId: String,
+  userId: mongoose.Types.ObjectId,
   otp: String,
-  createdAt: Date,
-  expiry: Date
+  createdAt: Number,
+  expiry: Number
 })
 
 const userModel = mongoose.model("Users",userSchema,"Users");

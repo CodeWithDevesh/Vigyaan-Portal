@@ -5,7 +5,7 @@
   "main": "index.ts",
   "scripts": {
     "start": "tsc -b && node dist/index.js",
-    "dev": "tsc -b && nodemon dist/index.js",
+    "dev": "nodemon --ext ts --exec npx ts-node src/index.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -35,6 +35,6 @@
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
     "nodemon": "^3.1.9",
-    "typescript": "^5.8.2"
+    "ts-node": "^10.9.2"
   }
 }
