@@ -153,7 +153,7 @@ authRouter.post('/verify-otp',async (req: Request, res: Response): Promise<any> 
   });
 })
 
-authRouter.post('/forgot-password',async (req: Request, res: Response): Promise<any> =>{
+authRouter.post('/change-password',async (req: Request, res: Response): Promise<any> =>{
   const {email} = req.body;
   const user = await userModel.findOne({ email });
   if (!user) {
