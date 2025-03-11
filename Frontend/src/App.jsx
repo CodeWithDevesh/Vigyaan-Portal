@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Navbar from "./components/navbar";
 import Projects from "./pages/Projects";
 import { AnimatePresence } from "framer-motion";
+import Login from "./components/auth/login";
 
 function App() {
   return (
@@ -14,6 +15,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Home />} />
             <Route path="/projects" element={<Projects />} />
+            <Route path="/login" element={<Login />} />
           </Routes>
         </AnimatePresence>
       </BrowserRouter>
