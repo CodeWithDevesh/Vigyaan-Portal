@@ -208,8 +208,8 @@ authRouter.post(
   }
 );
 
-authRouter.post("/sendOTP", async (req: Request, res: Response) => {
-  const r = await sendOTP("deveshagarwal652005@gmail.com", null);
-  res.json({ message: "OTP sent", ok: {r} });
-});
+// authRouter.post("/sendOTP", async (req: Request, res: Response) => {
+//   const r = await sendOTP("deveshagarwal652005@gmail.com", null);
+//   res.json({ message: "OTP sent", ok: {r} });
+// });
 export default authRouter;

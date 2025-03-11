@@ -15,7 +15,7 @@ const transporter = nodemailer.createTransport({
     pass: process.env.AUTH_PASS,
   },
 });
-const sendOTP = async(email: string, _id: mongoose.Types.ObjectId|null): Promise<Boolean>=>{
+const sendOTP = async(email: string, _id: mongoose.Types.ObjectId): Promise<Boolean>=>{
     try{
         const otp: string = `${Math.floor(100000 + Math.random() * 900000)}`;
         const mailOptions = {

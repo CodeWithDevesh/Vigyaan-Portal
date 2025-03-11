@@ -1,12 +1,12 @@
-"use client";
-
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import axios from "axios";
+const server = import.meta.env.VITE_SERVER_URL;
+import { ToastContainer, toast } from "react-toastify";
 
 function LoginForm() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
-  const [userType, setUserType] = useState("user");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,6 +14,28 @@ function LoginForm() {
     event.preventDefault();
     setIsLoading(true);
     // TODO: Implement login functionality
+    console.log(server);
+    axios
+      .post(`${server}/vigyaanportal/v1/auth/login`, {
+        email,
+        password,
+      })
+      .then((res) => {
+        if (res.data.ok == true) {
+          localStorage.setItem("token", res.data.token);
+          toast("Logged In Successfully!");
+          navigate("/");
+        } else {
+          alert(res.data.message);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(`${err.response.data.message}`);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
   }
 
   return (
@@ -57,34 +79,6 @@ function LoginForm() {
               className="mt-1 block w-full px-3 py-2 bg-white border border-primary rounded-md text-sm shadow-sm placeholder-gray-400
                          focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
             />
-          </div>
-
-          <div>
-            <span className="block text-base font-medium text-primary mb-2">
-              User Type
-            </span>
-            <div className="space-y-2">
-              <label className="inline-flex items-center">
-                <input
-                  type="radio"
-                  value="user"
-                  checked={userType === "user"}
-                  onChange={() => setUserType("user")}
-                  className="form-radio text-primary border-primary focus:ring-primary"
-                />
-                <span className="ml-1">User</span>
-              </label>
-              <label className="inline-flex items-center ml-6">
-                <input
-                  type="radio"
-                  value="winner"
-                  checked={userType === "winner"}
-                  onChange={() => setUserType("winner")}
-                  className="form-radio text-primary border-primary focus:ring-primary"
-                />
-                <span className="ml-1">Winner</span>
-              </label>
-            </div>
           </div>
         </div>
 
