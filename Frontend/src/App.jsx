@@ -14,18 +14,18 @@ function App() {
   return (
     <>
       <BrowserRouter>
+        <Navbar />
+        <ToastContainer
+          position="bottom-right"
+          autoClose={2000}
+          hideProgressBar
+          closeOnClick={false}
+          pauseOnHover
+          draggable={false}
+          theme="light"
+        />
         <AnimatePresence>
-          <Navbar />
-          <ToastContainer
-            position="bottom-right"
-            autoClose={2000}
-            hideProgressBar
-            closeOnClick={false}
-            pauseOnHover
-            draggable={false}
-            theme="light"
-          />
-          <Routes>
+          <Routes key={location.pathname}>
             <Route path="/" element={<Home />} />
             <Route path="/projects" element={<Projects />} />
             <Route path="/login" element={<LoginPage />} />

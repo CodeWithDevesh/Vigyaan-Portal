@@ -15,12 +15,12 @@ function Navbar() {
     if (!token) {
       return;
     }
-
-    let svgCode = multiavatar('Binx Bond');
-    console.log(svgCode);
-    setProfileIcon(svgCode);
-
     //TODO: Fetch user data from backend and set profileIcon
+
+    // For now, using dummy data
+    // Replace with name later
+    let svgCode = multiavatar("Binx Bond");
+    setProfileIcon(svgCode);
   }, [token]);
 
   return (
@@ -54,9 +54,7 @@ function Navbar() {
             style={{ boxShadow: "4px 5px 5px rgba(0, 0, 0, .3)" }}
             onClick={() => setShowMenu(!showMenu)}
             dangerouslySetInnerHTML={{ __html: profileIcon }}
-          >
-            {/* <img className="inline-block h-[40px]" src={profileIcon} alt="" /> */}
-          </button>
+          ></button>
           {showMenu && (
             <>
               <div
@@ -90,15 +88,6 @@ function Navbar() {
           )}
         </div>
       )}
-      {/* {token && (
-        <Link
-        to={"/profile"}
-        className="justify-self-end mr-4 rounded-full hover:scale-110 active:scale-90 transition-all text-xl"
-          style={{ boxShadow: "4px 5px 5px rgba(0, 0, 0, .3)" }}
-        >
-          <img className="inline-block h-[40px]" src={profileIcon} alt="" />
-        </Link>
-      )} */}
     </div>
   );
 }
