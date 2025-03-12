@@ -1,5 +1,8 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
+import axios from "axios";
+import { toast } from "react-toastify";
+const server = import.meta.env.VITE_SERVER_URL;
 
 // Heroicons (import as needed)
 const UserIcon = () => (
@@ -123,13 +126,15 @@ const Signup = ({ onClose = () => {} }) => {
           throw new Error("Please use your college email address");
         }
 
-        // Simulate API call (replace this with your actual API call)
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-        console.log("Signup data submitted:", formData);
-
-        // Show success message and move to OTP step
-        alert("Verification required: We've sent an OTP to your email address");
-        setStep(2); // Move to OTP step
+        axios
+          .post(`${server}/vigyaanportal/v1/auth/signup`, formData)
+          .then((res) => {
+            console.log(res);
+            
+          })
+          .catch((err) => {
+            console.log(err);
+          });
       } else {
         // Simulate OTP verification (replace this with your actual API call)
         await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
@@ -318,12 +323,12 @@ const Signup = ({ onClose = () => {} }) => {
                   </div>
                 </div>
               </div>
-                  <div className="flex justify-end mt-4 text-lg font-rubik gap-2">
-                    <p>Already have an account...</p>
-                    <Link to={"/login"} className="underline">
-                      Sign In
-                    </Link>
-                  </div>
+              <div className="flex justify-end mt-4 text-lg font-rubik gap-2">
+                <p>Already have an account...</p>
+                <Link to={"/login"} className="underline">
+                  Sign In
+                </Link>
+              </div>
             </div>
           ) : (
             <div className="space-y-4">

@@ -13,7 +13,6 @@ function LoginForm() {
   async function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
-    // TODO: Implement login functionality
     console.log(server);
     axios
       .post(`${server}/vigyaanportal/v1/auth/login`, {
@@ -24,7 +23,7 @@ function LoginForm() {
         if (res.data.ok == true) {
           localStorage.setItem("token", res.data.token);
           toast("Logged In Successfully!");
-          navigate("/");
+          window.location.href = "/";
         } else {
           alert(res.data.message);
         }
