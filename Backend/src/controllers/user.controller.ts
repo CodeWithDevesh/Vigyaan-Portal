@@ -292,7 +292,7 @@ const getProfile = async (
   res: Response
 ): Promise<any> => {
   try {
-    const user = await userModel.findById(req.userId);
+    const user = await userModel.findById(req.userId).select("-password");
     if (!user) {
       return res.status(404).json({
         message: "User Not Found",
