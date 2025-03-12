@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import { Link } from "react-router";
 import axios from "axios";
-import { toast } from "react-toastify";
-const server = import.meta.env.VITE_SERVER_URL;
 import {
   CheckCircleIcon,
   GraduationCapIcon,
@@ -26,6 +24,7 @@ const Signup = ({ onClose = () => {} }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
 
+  const server = import.meta.env.VITE_SERVER_URL;
   const branches = ["CSE", "IT", "ECE", "EEE", "ME", "CE", "BT"];
   const years = Array.from({ length: 4 }, (_, i) => currentYear + i);
 
@@ -39,7 +38,6 @@ const Signup = ({ onClose = () => {} }) => {
   };
 
   const validateEmail = (email) => {
-    // Simple check for college email
     return email.endsWith(".edu") || email.includes("ac.in");
   };
 
@@ -55,25 +53,32 @@ const Signup = ({ onClose = () => {} }) => {
           throw new Error("Please use your college email address");
         }
 
-        axios
-          .post(`${server}/vigyaanportal/v1/auth/signup`, formData)
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        // Make API call for signup
+        const response = await axios.post(
+          `${server}/vigyaanportal/v1/auth/signup`,
+          formData
+        );
+        
+        if (response.status === 200 || response.status === 201) {
+          // Move to OTP step on successful signup
+          setStep(2);
+        }
       } else {
-        // Simulate OTP verification (replace this with your actual API call)
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-        console.log("OTP verified:", otp);
+        // Handle OTP verification
+        // Replace with your actual OTP verification API call
+        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulated delay
+        // Here you would typically make an API call to verify the OTP
+        // await axios.post(`${server}/vigyaanportal/v1/auth/verify-otp`, { email: formData.email, otp });
 
-        // Show success message and close modal
         alert("Registration successful: Your account has been created!");
-        onClose(); // Call the onClose function to close the modal
+        onClose();
       }
     } catch (err) {
-      setError(err.message || "An error occurred during registration");
+      setError(
+        err.response?.data?.message || 
+        err.message || 
+        "An error occurred during registration"
+      );
     } finally {
       setIsLoading(false);
     }
@@ -115,12 +120,8 @@ const Signup = ({ onClose = () => {} }) => {
         <form onSubmit={handleSubmit} className="p-6">
           {step === 1 ? (
             <div className="space-y-4">
-              {/* Name Field */}
               <div className="space-y-1">
-                <label
-                  htmlFor="name"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="name" className="text-sm font-medium text-gray-700">
                   Full Name
                 </label>
                 <div className="relative">
@@ -139,12 +140,8 @@ const Signup = ({ onClose = () => {} }) => {
                 </div>
               </div>
 
-              {/* Email Field */}
               <div className="space-y-1">
-                <label
-                  htmlFor="email"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="email" className="text-sm font-medium text-gray-700">
                   College Email
                 </label>
                 <div className="relative">
@@ -164,12 +161,8 @@ const Signup = ({ onClose = () => {} }) => {
                 </div>
               </div>
 
-              {/* Password Field */}
               <div className="space-y-1">
-                <label
-                  htmlFor="password"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="password" className="text-sm font-medium text-gray-700">
                   Password
                 </label>
                 <div className="relative">
@@ -189,13 +182,9 @@ const Signup = ({ onClose = () => {} }) => {
                 </div>
               </div>
 
-              {/* Branch and Semester Fields */}
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-1">
-                  <label
-                    htmlFor="branch"
-                    className="text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="branch" className="text-sm font-medium text-gray-700">
                     Branch
                   </label>
                   <div className="relative">
@@ -205,9 +194,7 @@ const Signup = ({ onClose = () => {} }) => {
                     <select
                       id="branch"
                       value={formData.branch}
-                      onChange={(e) =>
-                        handleSelectChange("branch", e.target.value)
-                      }
+                      onChange={(e) => handleSelectChange("branch", e.target.value)}
                       className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
                     >
@@ -222,10 +209,7 @@ const Signup = ({ onClose = () => {} }) => {
                 </div>
 
                 <div className="space-y-1">
-                  <label
-                    htmlFor="sem"
-                    className="text-sm font-medium text-gray-700"
-                  >
+                  <label htmlFor="sem" className="text-sm font-medium text-gray-700">
                     Graduation Year
                   </label>
                   <div className="relative">
@@ -235,9 +219,7 @@ const Signup = ({ onClose = () => {} }) => {
                     <select
                       id="sem"
                       value={formData.gradYear}
-                      onChange={(e) =>
-                        handleSelectChange("gradYear", e.target.value)
-                      }
+                      onChange={(e) => handleSelectChange("gradYear", e.target.value)}
                       className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
                     >
@@ -251,8 +233,8 @@ const Signup = ({ onClose = () => {} }) => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end mt-4 text-lg font-rubik gap-2">
-                <p>Already have an account...</p>
+              <div className="flex justify-start mt-4 text-sm font-rubik gap-2">
+                <p>Already have an account?</p>
                 <Link to={"/login"} className="underline">
                   Sign In
                 </Link>
@@ -260,14 +242,11 @@ const Signup = ({ onClose = () => {} }) => {
             </div>
           ) : (
             <div className="space-y-4">
-              {/* OTP Notification */}
               <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
                 <div className="flex items-start gap-3">
                   <CheckCircleIcon />
                   <div>
-                    <h4 className="font-medium text-black">
-                      Verification Required
-                    </h4>
+                    <h4 className="font-medium text-black">Verification Required</h4>
                     <p className="text-sm text-gray-600">
                       We've sent a 6-digit code to{" "}
                       <span className="font-medium">{formData.email}</span>
@@ -276,12 +255,8 @@ const Signup = ({ onClose = () => {} }) => {
                 </div>
               </div>
 
-              {/* OTP Field */}
               <div className="space-y-1">
-                <label
-                  htmlFor="otp"
-                  className="text-sm font-medium text-gray-700"
-                >
+                <label htmlFor="otp" className="text-sm font-medium text-gray-700">
                   Verification Code
                 </label>
                 <input
@@ -295,10 +270,7 @@ const Signup = ({ onClose = () => {} }) => {
                 />
                 <p className="text-sm text-gray-500 text-center">
                   Didn't receive the code?{" "}
-                  <button
-                    type="button"
-                    className="text-black hover:text-gray-800"
-                  >
+                  <button type="button" className="text-black hover:text-gray-800">
                     Resend
                   </button>
                 </p>
@@ -306,7 +278,6 @@ const Signup = ({ onClose = () => {} }) => {
             </div>
           )}
 
-          {/* Submit Button */}
           <div className="mt-6">
             <button
               type="submit"

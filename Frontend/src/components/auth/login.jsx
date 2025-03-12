@@ -1,8 +1,18 @@
 import { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
-const server = import.meta.env.VITE_SERVER_URL;
 import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import {
+  CheckCircleIcon,
+  GraduationCapIcon,
+  BookIcon,
+  LockIcon,
+  MailIcon,
+  UserIcon,
+} from "../icons";
+
+const server = import.meta.env.VITE_SERVER_URL;
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -10,95 +20,128 @@ function LoginForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  async function handleSubmit(event) {
+  const handleSubmit = async (event) => {
     event.preventDefault();
     setIsLoading(true);
-    console.log(server);
-    axios
-      .post(`${server}/vigyaanportal/v1/auth/login`, {
+
+    try {
+      const response = await axios.post(`${server}/vigyaanportal/v1/auth/login`, {
         email,
         password,
-      })
-      .then((res) => {
-        if (res.data.ok == true) {
-          localStorage.setItem("token", res.data.token);
-          toast("Logged In Successfully!");
-          window.location.href = "/";
-        } else {
-          alert(res.data.message);
-        }
-      })
-      .catch((err) => {
-        console.log(err);
-        toast.error(`${err.response.data.message}`);
-      })
-      .finally(() => {
-        setIsLoading(false);
       });
-  }
+
+      if (response.data.ok) {
+        localStorage.setItem("token", response.data.token);
+        toast.success("Logged in successfully!", {
+          position: "top-center",
+        });
+        setTimeout(() => navigate("/"), 1500); // Delay for toast visibility
+      } else {
+        toast.error(response.data.message, {
+          position: "top-center",
+        });
+      }
+    } catch (err) {
+      console.error(err);
+      toast.error(err.response?.data?.message || "An error occurred during login.", {
+        position: "top-center",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="bg-white rounded-lg overflow-hidden shadow-[0px_35px_35px_rgba(0,0,0,.4)]">
-      <form onSubmit={handleSubmit} className="p-8">
-        <div className="space-y-6">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8 bg-white rounded-xl shadow-lg p-6">
+        {/* Header */}
+        <div className="text-center">
+          <h2 className="text-xl font-bold text-gray-900">Sign In</h2>
+          <p className="mt-2 text-sm text-gray-600">
+            Access Vigyaan Portal to explore and collaborate on innovative projects
+          </p>
+        </div>
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Email Field */}
           <div>
-            <label
-              htmlFor="email"
-              className="block text-base font-medium text-primary"
-            >
-              Email
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              College Email
             </label>
-            <input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="name@nitrr.ac.in"
-              required
-              disabled={isLoading}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-primary rounded-md text-sm shadow-sm placeholder-gray-400
-                         focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-            />
+            <div className="mt-1 relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <MailIcon />
+              </div>
+              <input
+                id="email"
+                type="email"
+                placeholder="your.email@college.edu"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                disabled={isLoading}
+                className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black"
+                required
+              />
+            </div>
           </div>
 
+          {/* Password Field */}
           <div>
-            <label
-              htmlFor="password"
-              className="block text-base font-medium text-primary"
-            >
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700">
               Password
             </label>
-            <input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              disabled={isLoading}
-              className="mt-1 block w-full px-3 py-2 bg-white border border-primary rounded-md text-sm shadow-sm placeholder-gray-400
-                         focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary"
-            />
+            <div className="mt-1 relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <LockIcon />
+              </div>
+              <input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                disabled={isLoading}
+                className="appearance-none block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md placeholder-gray-400 focus:outline-none focus:ring-1 focus:ring-black"
+                required
+              />
+            </div>
           </div>
-        </div>
 
-        <div className="mt-8">
-          <button
-            type="submit"
-            disabled={isLoading}
-            className={`w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-primary hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary ${
-              isLoading ? "opacity-50 cursor-not-allowed" : " cursor-pointer"
-            }`}
-          >
-            {isLoading ? "Signing in..." : "Sign in"}
-          </button>
-        </div>
-        <div className="flex justify-end mt-4 text-lg font-rubik gap-2">
-          <p>Don't have an account...</p>
-          <Link to={"/signup"} className="underline">
-            Sign Up
+          {/* Submit Button */}
+          <div>
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full py-2 px-4 rounded-md bg-black text-white font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black disabled:bg-gray-400 transition duration-200"
+            >
+              {isLoading ? "Signing in..." : "Continue"}
+            </button>
+          </div>
+        </form>
+
+        {/* Sign In Link */}
+        <div className="text-center text-sm text-gray-600">
+          Already have an account?{" "}
+          <Link to="/signup" className="text-black hover:underline">
+            Sign In
           </Link>
         </div>
-      </form>
+      </div>
+
+      {/* Toast Container */}
+      <ToastContainer
+        position="top-center"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+      />
     </div>
   );
 }
