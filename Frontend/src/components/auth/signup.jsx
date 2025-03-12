@@ -39,8 +39,7 @@ const Signup = ({ onClose = () => {} }) => {
   };
 
   const validateEmail = (email) => {
-    // Simple check for college email
-    return email.endsWith(".edu") || email.includes("ac.in");
+    return email.endsWith(".nitrr.ac.in");
   };
 
   const handleSubmit = async (e) => {
@@ -50,7 +49,6 @@ const Signup = ({ onClose = () => {} }) => {
 
     try {
       if (step === 1) {
-        // Validate email
         if (!validateEmail(formData.email)) {
           throw new Error("Please use your college email address");
         }
