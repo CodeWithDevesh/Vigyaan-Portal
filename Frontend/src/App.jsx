@@ -9,6 +9,7 @@ import LoginPage from "./pages/Login";
 import { ToastContainer } from "react-toastify";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
+import UserDashboard from "./pages/Dashboard/User";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
             <Route path="/signup" element={<Signup />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/userdashboard" element={<UserDashboard />} />
             <Route path="*" element={<h1>404 Not Found</h1>} />
           </Routes>
         </AnimatePresence>

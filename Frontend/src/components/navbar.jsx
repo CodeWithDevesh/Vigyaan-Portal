@@ -29,7 +29,7 @@ function Navbar() {
   };
 
   return (
-    <div className="h-[80px] grid grid-cols-3 items-center justify-items-center px-3 fixed top-0 left-0 right-0 text-2xl text-secondary font-bold font-poppins">
+    <div className="h-[80px] grid grid-cols-3 bg-bg-1 items-center justify-items-center px-3 fixed top-0 left-0 right-0 text-2xl text-secondary font-bold font-poppins">
       <div className="justify-self-start">
         <img className="h-[60px]" src={logo} alt="" />
       </div>
