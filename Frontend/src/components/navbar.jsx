@@ -1,28 +1,30 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import logo from "../assets/Images/l.png";
 import { Link } from "react-router";
 import pi from "../assets/Images/profile.png";
 import { useNavigate } from "react-router";
 import multiavatar from "@multiavatar/multiavatar/esm";
 import { ProfileIcon, LogoutIcon } from "../components/icons";
+import { AuthContext } from "./auth/AuthContext";
 
 function Navbar() {
-  const [token, setToken] = useState(localStorage.getItem("token"));
+  // const [token, setToken] = useState(localStorage.getItem("token"));
+  const {user, logout} = useContext(AuthContext);
   const [profileIcon, setProfileIcon] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (!token) {
+    if (!user) {
       return;
     }
     //TODO: Fetch user data from backend and set profileIcon
 
     // For now, using dummy data
     // Replace with name later
-    let svgCode = multiavatar("Binx Bond");
+    let svgCode = multiavatar(user.name);
     setProfileIcon(svgCode);
-  }, [token]);
+  }, [user]);
 
   const handleBackdropClick = () => {
     setShowMenu(false);
@@ -43,7 +45,7 @@ function Navbar() {
         </Link>
       </div>
 
-      {!token && (
+      {!user && (
         <Link
           to={"/login"}
           className="justify-self-end mr-4 bg-bg-1 py-1 px-[10px] rounded-2xl hover:scale-110 active:scale-90 transition-all text-xl"
@@ -52,7 +54,7 @@ function Navbar() {
           Sign In
         </Link>
       )}
-      {token && (
+      {user && (
         <div className="relative justify-self-end">
           <button
             className=" mr-4 rounded-full hover:scale-110 active:scale-90 transition-all text-xl h-[40px] w-[40px]"
@@ -79,9 +81,8 @@ function Navbar() {
                 </button>
                 <button
                   onClick={() => {
-                    localStorage.removeItem("token");
-                    setToken(null);
-                    window.location.href = "/";
+                    logout();
+                    navigate("/");
                   }}
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                 >

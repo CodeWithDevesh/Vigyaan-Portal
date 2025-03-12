@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { use, useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import avatar from "@multiavatar/multiavatar";
 import {
@@ -7,15 +7,32 @@ import {
   UserIcon,
   GraduationCapIcon,
 } from "../../components/icons";
+import { AuthContext } from "../../components/auth/AuthContext";
 
 function Profile() {
+  const {user} = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
 
-  const [fullName, setFullName] = useState("John Doe");
-  const [email, setEmail] = useState("john.doe@example.com");
-  const [branch, setBranch] = useState("BT");
-  const [gradYear, setGradYear] = useState(2027);
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [branch, setBranch] = useState("");
+  const [gradYear, setGradYear] = useState(new Date().getFullYear());
   const [profileIcon, setProfileIcon] = useState(null);
+
+  useEffect(() => {
+    if (!user) {
+      // Reset to empty strings if user is not defined
+      setFullName("");
+      setEmail("");
+      setBranch("");
+      setGradYear(new Date().getFullYear());
+    } else {
+      setFullName(user.name || "");
+      setEmail(user.email || "");
+      setBranch(user.branch || "");
+      setGradYear(user.year || new Date().getFullYear());
+    }
+  }, [user]);
 
   // For discarding changes if canceled
   const [oldFullName, setOldFullName] = useState(fullName);

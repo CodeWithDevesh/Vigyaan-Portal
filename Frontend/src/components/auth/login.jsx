@@ -1,14 +1,16 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 const server = import.meta.env.VITE_SERVER_URL;
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
+import { AuthContext } from "./AuthContext";
 
 function LoginForm() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const {login} = useContext(AuthContext);
 
   async function handleSubmit(event) {
     event.preventDefault();
@@ -21,9 +23,9 @@ function LoginForm() {
       })
       .then((res) => {
         if (res.data.ok == true) {
-          localStorage.setItem("token", res.data.token);
+          login(res.data.token);
           toast("Logged In Successfully!");
-          window.location.href = "/";
+          navigate("/");
         } else {
           alert(res.data.message);
         }

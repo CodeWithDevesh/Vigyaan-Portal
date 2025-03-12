@@ -10,11 +10,13 @@ import { ToastContainer } from "react-toastify";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import UserDashboard from "./pages/Dashboard/User";
+import { AuthProvider } from "./components/auth/AuthContext";
 
 function App() {
   return (
     <>
       <BrowserRouter>
+        <AuthProvider>
         <Navbar />
         <ToastContainer
           position="bottom-right"
@@ -25,18 +27,19 @@ function App() {
           draggable={false}
           theme="light"
         />
-        <AnimatePresence>
-          <Routes key={location.pathname}>
-            <Route path="/" element={<Home />} />
-            <Route path="/projects" element={<Projects />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/settings" element={<Settings />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/userdashboard" element={<UserDashboard />} />
-            <Route path="*" element={<h1>404 Not Found</h1>} />
-          </Routes>
-        </AnimatePresence>
+          <AnimatePresence>
+            <Routes key={location.pathname}>
+              <Route path="/" element={<Home />} />
+              <Route path="/projects" element={<Projects />} />
+              <Route path="/login" element={<LoginPage />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/settings" element={<Settings />} />
+              <Route path="/profile" element={<Profile />} />
+              <Route path="/userdashboard" element={<UserDashboard />} />
+              <Route path="*" element={<h1>404 Not Found</h1>} />
+            </Routes>
+          </AnimatePresence>
+        </AuthProvider>
       </BrowserRouter>
     </>
   );
