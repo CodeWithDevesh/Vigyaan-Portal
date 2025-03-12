@@ -22,11 +22,11 @@ const userSchema = new mongoose.Schema(
       enum: ["CSE", "IT", "ECE", "ME", "EE"],
       required: true,
     },
-    sem: {
+    grad_year: {
       type: Number,
       required: true,
       min: 1,
-      max: 8,
+      max: 4,
     },
     role: {
       type: String,
@@ -55,6 +55,12 @@ const userSchema = new mongoose.Schema(
 //Project Schema
 const projectSchema = new mongoose.Schema(
   {
+    problemId: {
+      type: String,
+      required: true,
+      unique: true,
+      trim: true
+    },
     title: {
       type: String,
       required: true,
@@ -88,7 +94,7 @@ const projectSchema = new mongoose.Schema(
         ): boolean {
           return this.status === "taken" ? value !== null : true;
         },
-        message: "Assigned_to must be set when project status is 'taken'.",
+        message: "Project is already 'taken'.",
       },
     }, // Current Owner
     status: {

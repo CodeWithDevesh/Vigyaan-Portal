@@ -1,22 +1,46 @@
 import { NextFunction, Request, Response } from "express";
 import jwt from 'jsonwebtoken'
-
-const SECRET_KEY = process.env.SERCRET as string
-
-const authenticateToken = async (req: Request, res: Response, next: NextFunction): Promise<any> => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-
-    if (token == null) return res.status(401).json({
-        message: "User not Authenticated"
-    });
-
-    jwt.verify(token, SECRET_KEY, (err, user) => {
-        if (err) return res.status(403).json({
-            message: "Error while authenticating user"
-        });
-        next();
-    });
-};
+import dotenv from "dotenv"
+import { userModel } from "../models/models";
+dotenv.config()
+interface AuthenticatedRequest extends Request {
+    userId?: string;
+    role?: string;
+  }
+const authenticateToken = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      res.status(403).json({ message: "Invalid Token", ok: false });
+      return;
+    }
+  
+    const token = authHeader.split(" ")[1];
+  
+    try {
+      const decoded = jwt.verify(token, process.env.JWT_TOKEN!) as {
+        userId: string;
+        role: string;
+      };
+      const user = await userModel.findById(decoded.userId);
+      if(!user){
+          res.status(403).json({
+              message: "No such winner exists!",
+              ok: false
+          })
+          return;
+      }
+      req.userId = decoded.userId;
+      req.role = decoded.role;
+      next();
+    } catch (err) {
+      console.error("JWT verification failed:", err);
+      res.status(403).json({ message: "Invalid token!", ok: false });
+      return;
+    }
+  };
 
 export default authenticateToken
