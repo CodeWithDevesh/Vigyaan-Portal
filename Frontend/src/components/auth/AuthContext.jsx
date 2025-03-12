@@ -1,11 +1,22 @@
 import { createContext, useState, useEffect } from "react";
 import axios from "axios";
 const server = import.meta.env.VITE_SERVER_URL;
+import { toast } from "react-toastify";
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
+
+  const login = (token) => {
+    localStorage.setItem("token", token);
+    setUser({ token });
+  };
+
+  const logout = () => {
+    localStorage.removeItem("token");
+    setUser(null);
+  };
 
   useEffect(() => {
     if (!user) return;
@@ -25,6 +36,8 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch((err) => {
+        toast.error("You have been logged out. Please login again.");
+        logout();
         console.error(err);
       });
   }, [user?.token]);
@@ -35,16 +48,6 @@ export const AuthProvider = ({ children }) => {
       setUser({ token });
     }
   }, []);
-
-  const login = (token) => {
-    localStorage.setItem("token", token);
-    setUser({ token });
-  };
-
-  const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
-  };
 
   return (
     <AuthContext.Provider value={{ user, login, logout }}>

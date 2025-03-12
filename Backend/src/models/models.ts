@@ -25,8 +25,13 @@ const userSchema = new mongoose.Schema(
     grad_year: {
       type: Number,
       required: true,
-      min: 1,
-      max: 4,
+      validate: {
+        validator: function (value: number) {
+          const currentYear = new Date().getFullYear();
+          return value >= currentYear && value <= currentYear + 4;
+        },
+        message: "grad_year must be between the current year and current year + 4",
+      },
     },
     role: {
       type: String,

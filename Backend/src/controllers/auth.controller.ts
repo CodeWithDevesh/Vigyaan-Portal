@@ -23,7 +23,7 @@ const signup = async (req: Request, res: Response): Promise<any> => {
 
     const newUser = new userModel({
       name,
-      email,
+      email,  
       password: hashedPassword,
       branch,
       grad_year,
@@ -32,7 +32,7 @@ const signup = async (req: Request, res: Response): Promise<any> => {
     const id = newUser._id;
     const token = "Bearer "+jwt.sign({ userId: id, role: "user" }, process.env.JWT_TOKEN!, {
       expiresIn: "1h",
-    });
+    })
 
     const otp_status = await sendOTP(email, id);
     if (otp_status) {
@@ -213,11 +213,30 @@ const change_password = async (req: AuthenticatedRequest, res: Response): Promis
   }
 }
 
+const requestOTP  = async (req: Request, res: Response): Promise<any> => {
+  try {
+    const { email } = req.body;
+    const present = await userModel.findOne({ email });
+    if(!present) throw new Error("User not found");
+    const id = present._id
+    await sendOTP(email, id);
+    res.status(200).json({ok: true, message: "OTP sent successfully"});
+  } catch(err) {
+      console.log(err)
+      res.status(500).json({
+        message: "Error while sending OTP",
+        error: err instanceof Error ? err.message : String(err),
+        ok: false
+      })
+    }
+}
+
 export{
     signup,
     login,
     verify_otp,
     forgot_password,
     reset_password,
-    change_password
+    change_password,
+    requestOTP
 }

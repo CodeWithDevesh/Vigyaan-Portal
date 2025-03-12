@@ -83,7 +83,7 @@ const getProjects = async (req: Request, res: Response): Promise<any> => {
 };
 
 const getProject = async (req: Request, res: Response): Promise<any> => {
-  const {id} = req.params;
+  const { id } = req.params;
 
   try {
     const project = await projectModel.findById(id);
@@ -181,13 +181,14 @@ const createProject = async (
 const allRequests = async (
   req: AuthenticatedRequest,
   res: Response
-): Promise<any> => {//wrong
+): Promise<any> => {
+  //wrong
   const user = await userModel.findById(req.userId);
-  if(!user){
+  if (!user) {
     return res.status(404).json({
       message: "User not found",
-      ok: false
-    })
+      ok: false,
+    });
   }
   const requests = await requestModel.find({ status: "pending" });
   return res.status(200).json({
@@ -282,7 +283,7 @@ const getProfile = async (
     }
     return res.status(200).json({
       response: user,
-      ok: true
+      ok: true,
     });
   } catch (err) {
     return res.status(500).json({
@@ -292,44 +293,46 @@ const getProfile = async (
     });
   }
 };
-const updateProfile = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
-    try {
-      const user = await userModel.findById(req.userId);
-      if (!user) {
-        return res.status(404).json({
-          message: "User Not Found",
-          ok: false,
-        });
-      }
-  
-      const { name, email, grad_year } = req.body;
-      
-      const updateObj: Partial<typeof user> = {};
-      if (name) updateObj.name = name;
-      if (email) updateObj.email = email;
-      if (grad_year) updateObj.grad_year = grad_year;
-  
-      const updatedUser = await userModel.findByIdAndUpdate(
-        req.userId,
-        { $set: updateObj },
-        { new: true, runValidators: true }
-      );
-  
-      return res.status(200).json({
-        message: "Profile Updated Successfully",
-        ok: true,
-        user: updatedUser,
-      });
-  
-    } catch (err) {
-      return res.status(500).json({
-        message: "Some error occurred.",
-        error: err,
+const updateProfile = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    const user = await userModel.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "User Not Found",
         ok: false,
       });
     }
-  };
-  
+
+    const { name, grad_year, branch } = req.body;
+
+    const updateObj: Partial<typeof user> = {};
+    if (name) updateObj.name = name;
+    if (grad_year) updateObj.grad_year = grad_year;
+    if (branch) updateObj.branch = branch;
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      req.userId,
+      { $set: updateObj },
+      { new: true, runValidators: true }
+    );
+
+    return res.status(200).json({
+      message: "Profile Updated Successfully",
+      ok: true,
+      user: updatedUser,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      message: "Some error occurred.",
+      error: err,
+      ok: false,
+    });
+  }
+};
+
 export {
   projectRequest,
   sendDm,
@@ -341,5 +344,5 @@ export {
   approveReq,
   denyReq,
   getProfile,
-  updateProfile
+  updateProfile,
 };

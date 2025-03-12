@@ -30,7 +30,7 @@ function Profile() {
       setFullName(user.name || "");
       setEmail(user.email || "");
       setBranch(user.branch || "");
-      setGradYear(user.year || new Date().getFullYear());
+      setGradYear(user.grad_year || new Date().getFullYear());
     }
   }, [user]);
 
