@@ -78,6 +78,36 @@ const CheckCircleIcon = () => (
   </svg>
 );
 
+const LogoutIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-5 w-5 text-gray-400"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+  >
+    <path
+      fillRule="evenodd"
+      d="M3 4a1 1 0 011-1h6a1 1 0 110 2H5v10h5a1 1 0 110 2H4a1 1 0 01-1-1V4zm10.293 5.293a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L14.586 13H9a1 1 0 110-2h5.586l-1.293-1.293a1 1 0 010-1.414z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
+const ProfileIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-5 w-5 text-gray-400"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+  >
+    <path
+      fillRule="evenodd"
+      d="M10 10a4 4 0 100-8 4 4 0 000 8zm-7 8a7 7 0 0114 0H3z"
+      clipRule="evenodd"
+    />
+  </svg>
+);
+
 export {
   CheckCircleIcon,
   GraduationCapIcon,
@@ -85,4 +115,6 @@ export {
   LockIcon,
   MailIcon,
   UserIcon,
+  LogoutIcon,
+  ProfileIcon,
 };
