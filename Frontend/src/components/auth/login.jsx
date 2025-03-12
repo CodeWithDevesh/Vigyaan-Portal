@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 const server = import.meta.env.VITE_SERVER_URL;
@@ -10,7 +10,13 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {login} = useContext(AuthContext);
+  const {login, user} = useContext(AuthContext);
+
+  useEffect(() => {
+    if(user?.token) {
+      navigate("/");
+    }
+  }, [user]);
 
   async function handleSubmit(event) {
     event.preventDefault();

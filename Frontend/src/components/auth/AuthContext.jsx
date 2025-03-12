@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  useEffect(() => {
+  const loadUser = () => {
     if (!user) return;
 
     // Always attach the token to subsequent requests
@@ -40,6 +40,10 @@ export const AuthProvider = ({ children }) => {
         logout();
         console.error(err);
       });
+  };
+
+  useEffect(() => {
+    loadUser();
   }, [user?.token]);
 
   useEffect(() => {
@@ -50,7 +54,7 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, login, logout }}>
+    <AuthContext.Provider value={{ user, login, logout, loadUser }}>
       {children}
     </AuthContext.Provider>
   );

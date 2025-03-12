@@ -8,9 +8,12 @@ import {
   GraduationCapIcon,
 } from "../../components/icons";
 import { AuthContext } from "../../components/auth/AuthContext";
+import axios from "axios";
+import { toast } from "react-toastify";
+const server = import.meta.env.VITE_SERVER_URL;
 
 function Profile() {
-  const {user} = useContext(AuthContext);
+  const { user, loadUser } = useContext(AuthContext);
   const [isEditing, setIsEditing] = useState(false);
 
   const [fullName, setFullName] = useState("");
@@ -45,10 +48,6 @@ function Profile() {
   const years = Array.from({ length: 4 }, (_, i) => currentYear + i);
 
   useEffect(() => {
-    //TODO: Fetch user data from backend and set the state
-  }, []);
-
-  useEffect(() => {
     const svgCode = avatar(fullName);
     setProfileIcon(svgCode);
   }, [fullName]);
@@ -71,8 +70,28 @@ function Profile() {
 
   const handleSaveClick = () => {
     //TODO: Send the updated data to the backend
-
-    setIsEditing(false);
+    axios
+      .post(`${server}/vigyaanportal/v1/users/me`, {
+        name: fullName,
+        branch,
+        grad_year: gradYear,
+      })
+      .then((res) => {
+        if (res.data.ok) {
+          toast.success("Profile updated successfully");
+        } else {
+          toast.error("Failed to update profile");
+          console.error(res.data.message);
+        }
+      })
+      .catch((err) => {
+        toast.error("Failed to update profile");
+        console.error(err);
+      })
+      .finally(() => {
+        loadUser();
+        setIsEditing(false);
+      });
   };
 
   return (
