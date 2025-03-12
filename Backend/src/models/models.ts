@@ -124,8 +124,7 @@ const requestSchema = new mongoose.Schema(
     requested_by: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-      required: true,
-      unique: true
+      required: true
     },
     status: {
       type: String,
@@ -139,7 +138,7 @@ const requestSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-requestSchema.index({ project_id: 1, requested_by: 1 }, { unique: true });
+// requestSchema.index({ project_id: 1, requested_by: 1 }, { unique: true });
 
 
 const notificationSchema = new mongoose.Schema(
