@@ -16,8 +16,7 @@ const projectRequest = async (req: Request, res: Response): Promise<any> => {
   }
 
   try {
-    const coll = requestModel;
-    const alreadyExists = await coll.findOne({
+    const alreadyExists = await requestModel.findOne({
       project_id: project_id,
       requested_by: requested_by,
     });
@@ -27,12 +26,12 @@ const projectRequest = async (req: Request, res: Response): Promise<any> => {
         message: "Request from this user already exists",
       });
     }
-
-    await coll.insertOne({
+    const obj = {
       project_id: project_id,
       requested_by: requested_by,
-    });
-
+    }
+    const newReq = new requestModel(obj);
+    await newReq.save()
     return res.json({
       message: "Project requested successfully",
     });
@@ -68,9 +67,12 @@ const sendDm = async (req: Request, res: Response): Promise<any> => {
 
 const getProjects = async (req: Request, res: Response): Promise<any> => {
   try {
-    const coll = projectModel;
-    const resp = await coll.find({});
+    const { status, branch } = req.query;
+    const filters: any = {};
+    if (status) filters.status = status;
+    if (branch) filters.branch = branch;
 
+    const resp = await projectModel.find(filters);
     return res.json({
       response: resp,
     });
@@ -106,11 +108,17 @@ const getProject = async (req: Request, res: Response): Promise<any> => {
 const request = async (req: Request, res: Response): Promise<any> => {
   try {
     const { project_id, requested_by } = req.body;
-    const r = {
+    const exists = await requestModel.findOne({project_id,requested_by});
+    if(exists){
+      return res.status(403).json({
+        message: "Request Already Exists",
+        ok: false
+      })
+    }
+    const newRequest = new requestModel({
       project_id,
       requested_by,
-    };
-    const newRequest = new requestModel(r);
+    });
     await newRequest.save();
     return res.json({
       message: "Requested Access.",
@@ -190,7 +198,17 @@ const allRequests = async (
       ok: false,
     });
   }
-  const requests = await requestModel.find({ status: "pending" });
+  if (!Array.isArray(user.projects_created) || user.projects_created.length === 0) {
+    return res.status(200).json({
+      message: "The winner hasn't uploaded any projects.",
+      ok: false
+    });
+  }
+  const requests = await Promise.all(
+    user.projects_created.map(async (projectId) => {
+      return requestModel.find({ project_id: projectId , status: "pending"});
+    })
+  );
   return res.status(200).json({
     requests: requests,
     ok: true,
@@ -274,7 +292,7 @@ const getProfile = async (
   res: Response
 ): Promise<any> => {
   try {
-    const user = await userModel.findById(req.userId);
+    const user = await userModel.findById(req.userId).select("-password");
     if (!user) {
       return res.status(404).json({
         message: "User Not Found",
@@ -306,12 +324,12 @@ const updateProfile = async (
       });
     }
 
-    const { name, grad_year, branch } = req.body;
+    const { name, email, grad_year } = req.body;
 
     const updateObj: Partial<typeof user> = {};
     if (name) updateObj.name = name;
+    if (email) updateObj.email = email;
     if (grad_year) updateObj.grad_year = grad_year;
-    if (branch) updateObj.branch = branch;
 
     const updatedUser = await userModel.findByIdAndUpdate(
       req.userId,
@@ -322,7 +340,6 @@ const updateProfile = async (
     return res.status(200).json({
       message: "Profile Updated Successfully",
       ok: true,
-      user: updatedUser,
     });
   } catch (err) {
     return res.status(500).json({

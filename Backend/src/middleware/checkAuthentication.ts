@@ -37,7 +37,6 @@ const authenticateToken = async (
       req.role = decoded.role;
       next();
     } catch (err) {
-      console.error("JWT verification failed:", err);
       res.status(403).json({ message: "Invalid token!", ok: false });
       return;
     }
