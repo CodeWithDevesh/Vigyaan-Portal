@@ -41,6 +41,7 @@ const sendOTP = async(email: string, _id: mongoose.Types.ObjectId): Promise<Bool
     }
 };
 
+
 export {
     sendOTP,
     transporter
