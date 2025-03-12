@@ -324,11 +324,11 @@ const updateProfile = async (
       });
     }
 
-    const { name, email, grad_year } = req.body;
+    const { name, branch, grad_year } = req.body;
 
     const updateObj: Partial<typeof user> = {};
     if (name) updateObj.name = name;
-    if (email) updateObj.email = email;
+    if (branch) updateObj.branch = branch;
     if (grad_year) updateObj.grad_year = grad_year;
 
     const updatedUser = await userModel.findByIdAndUpdate(
