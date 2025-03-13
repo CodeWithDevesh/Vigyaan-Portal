@@ -8,7 +8,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  const login = (token) => {
+  const login = () => {
     localStorage.setItem("token", token);
     setUser({ token });
   };
@@ -19,8 +19,6 @@ export const AuthProvider = ({ children }) => {
   };
 
   const loadUser = () => {
-    if (!user) return;
-
     // Always attach the token to subsequent requests
     axios.defaults.headers.common["Authorization"] = `${user.token}`;
     axios

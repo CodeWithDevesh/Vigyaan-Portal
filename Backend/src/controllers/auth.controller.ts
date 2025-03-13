@@ -126,6 +126,14 @@ const login = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+const logout = async (req: Request, res: Response): Promise<any> => {
+  res.clearCookie("token");
+  return res.status(200).json({
+    message: "Logout Successful!",
+    ok: true,
+  });
+}
+
 const verify_otp = async (req: Request, res: Response): Promise<any> => {
   try {
     const { otp, userId } = req.body;
@@ -281,6 +289,7 @@ const requestOTP = async (req: Request, res: Response): Promise<any> => {
 export {
   signup,
   login,
+  logout,
   verify_otp,
   forgot_password,
   reset_password,
