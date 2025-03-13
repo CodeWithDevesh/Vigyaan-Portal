@@ -2,8 +2,10 @@ import { Router } from "express";
 import { projectRequest, sendDm, getProjects, getProject, createProject, request, allRequests, approveReq, denyReq, getProfile, updateProfile } from "../controllers/user.controller";
 import checkAuthentication from '../middleware/checkAuthentication'
 import userCheck from "../services/middlewares";
+import cookieParser from 'cookie-parser'
 
 const projectsRouter = Router();
+projectsRouter.use(cookieParser());
 projectsRouter.use(checkAuthentication);
 // projectsRouter.post("/requests", projectRedquest);//
 projectsRouter.post("/senddm", sendDm);

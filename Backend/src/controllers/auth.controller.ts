@@ -30,17 +30,25 @@ const signup = async (req: Request, res: Response): Promise<any> => {
     });
     await newUser.save();
     const id = newUser._id;
-    const token =
-      "Bearer " +
-      jwt.sign({ userId: id, role: "user" }, process.env.JWT_TOKEN!, {
+    const token = jwt.sign(
+      { userId: id, role: "user" },
+      process.env.JWT_TOKEN!,
+      {
         expiresIn: "1h",
-      });
+      }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // TODO: aim for https... so set it true later
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // Expires in 1 day
+    });
 
     return res.json({
       message: "Sign-up successful",
-      token,
       ok: true,
-    })
+    });
 
     // const otp_status = await sendOTP(email, id);
     // if (otp_status) {
@@ -89,15 +97,23 @@ const login = async (req: Request, res: Response): Promise<any> => {
       });
     }
 
-    const token =
-      "Bearer " +
-      jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_TOKEN!, {
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_TOKEN!,
+      {
         expiresIn: "1h",
-      });
+      }
+    );
+
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: false, // TODO: aim for https... so set it true later
+      sameSite: "strict",
+      maxAge: 24 * 60 * 60 * 1000, // Expires in 1 day
+    });
 
     return res.status(200).json({
       message: "Login Successful!",
-      token,
       ok: true,
     });
   } catch (err) {
@@ -160,7 +176,6 @@ const verify_otp = async (req: Request, res: Response): Promise<any> => {
     });
   }
 };
-
 
 const forgot_password = async (req: Request, res: Response): Promise<any> => {
   const { email } = req.body;
