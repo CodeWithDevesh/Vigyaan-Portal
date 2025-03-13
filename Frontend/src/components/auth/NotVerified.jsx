@@ -7,7 +7,7 @@ function NotVerified() {
   const { user } = useContext(AuthContext);
   return (
     <>
-      {user && !user.isVerified && (
+      {user && user.verified === false && (
         <div className="flex z-[1] items-center gap-4 p-1 bg-red-600 sticky top-[80px] left-0 right-0 border-y-2 border-red-700 shadow-md">
           <div className="flex items-center text-white">
             <ErrorIcon />
