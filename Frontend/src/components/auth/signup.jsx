@@ -20,7 +20,7 @@ const Signup = ({ onClose = () => {} }) => {
     email: "",
     password: "",
     branch: "",
-    gradYear: currentYear,
+    grad_year: currentYear,
   });
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -57,9 +57,19 @@ const Signup = ({ onClose = () => {} }) => {
             .post(`${server}/vigyaanportal/v1/auth/signup`, formData)
             .then((res) => {
               setStep(2)
+              axios.post(`${server}/vigyaanportal/v1/auth/request-otp`, 
+                {
+                  email: email
+                }
+              ).then((res) => {
+                console.log(res.data)
+              }).catch((err) => {
+                setError(err.message || "Error while requesting OTP")
+              })
             })
             .catch((err) => {
-              console.log(err);
+              console.log(err)
+              setError(err.response.data.message || "Error while signing up")
             });
         } else {
           try {
@@ -265,7 +275,7 @@ const Signup = ({ onClose = () => {} }) => {
                     </div>
                     <select
                       id="sem"
-                      value={formData.gradYear}
+                      value={formData.grad_year}
                       onChange={(e) =>
                         handleSelectChange("gradYear", e.target.value)
                       }
