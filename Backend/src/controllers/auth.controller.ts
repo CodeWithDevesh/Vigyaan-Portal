@@ -36,20 +36,26 @@ const signup = async (req: Request, res: Response): Promise<any> => {
         expiresIn: "1h",
       });
 
-    const otp_status = await sendOTP(email, id);
-    if (otp_status) {
-      return res.status(201).json({
-        message: "Sign-up Successful!",
-        token,
-        ok: true,
-        otpStatus: otp_status,
-      });
-    }
-    return res.status(404).json({
-      message: "Error sending the otp.",
-      ok: false,
-      otpStatus: otp_status,
-    });
+    return res.json({
+      message: "Sign-up successful",
+      token,
+      ok: true,
+    })
+
+    // const otp_status = await sendOTP(email, id);
+    // if (otp_status) {
+    //   return res.status(201).json({
+    //     message: "Sign-up Successful!",
+    //     token,
+    //     ok: true,
+    //     otpStatus: otp_status,
+    //   });
+    // }
+    // return res.status(404).json({
+    //   message: "Error sending the otp.",
+    //   ok: false,
+    //   otpStatus: otp_status,
+    // });
   } catch (err) {
     console.error(err);
     return res.status(500).json({
@@ -63,6 +69,8 @@ const signup = async (req: Request, res: Response): Promise<any> => {
 const login = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email, password } = req.body;
+
+    // console.log(email, password)
 
     // Find user
     const user = await userModel.findOne({ email });
