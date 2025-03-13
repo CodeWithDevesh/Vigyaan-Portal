@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import axios from "axios";
-const server = import.meta.env.VITE_SERVER_URL;
 import { toast } from "react-toastify";
 import { AuthContext } from "./AuthContext";
+import { api } from "../../helpers/api";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -21,15 +20,15 @@ function LoginForm() {
   async function handleSubmit(event) {
     event.preventDefault();
     setIsLoading(true);
-    console.log(server);
-    axios
-      .post(`${server}/vigyaanportal/v1/auth/login`, {
+    api
+      .post(`/auth/login`, {
         email,
         password,
-      })
+      }, {withCredentials: true})
       .then((res) => {
+        console.log(res);
         if (res.data.ok == true) {
-          login(res.data.token);
+          login();
           toast("Logged In Successfully!");
           navigate("/");
         } else {

@@ -10,6 +10,7 @@ import {
 import { AuthContext } from "../../components/auth/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { api } from "../../helpers/api";
 const server = import.meta.env.VITE_SERVER_URL;
 
 function Profile() {
@@ -70,8 +71,8 @@ function Profile() {
 
   const handleSaveClick = () => {
     //TODO: Send the updated data to the backend
-    axios
-      .post(`${server}/vigyaanportal/v1/users/me`, {
+    api
+      .post(`/users/me`, {
         name: fullName,
         branch,
         grad_year: gradYear,

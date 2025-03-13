@@ -1,7 +1,7 @@
 import { createContext, useState, useEffect } from "react";
-import axios from "axios";
 const server = import.meta.env.VITE_SERVER_URL;
 import { toast } from "react-toastify";
+import { api } from "../../helpers/api";
 
 export const AuthContext = createContext();
 
@@ -9,24 +9,29 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
   const login = () => {
-    localStorage.setItem("token", token);
-    setUser({ token });
+    loadUser();
   };
 
   const logout = () => {
-    localStorage.removeItem("token");
-    setUser(null);
+    api
+      .post(`/auth/logout`)
+      .then((res) => {
+        toast("Logged out successfully!");
+        setUser(null);
+      })
+      .catch((err) => {
+        toast.error("Error logging out. Please try again.");
+        console.error(err);
+      })
+      .finally(() => {});
   };
 
   const loadUser = () => {
-    // Always attach the token to subsequent requests
-    axios.defaults.headers.common["Authorization"] = `${user.token}`;
-    axios
-      .get(`${server}/vigyaanportal/v1/users/me`)
+    api
+      .get(`/users/me`)
       .then((res) => {
-        console.log(res.data); // see the user info from server
+        console.log(res.data); // TODO: Remove this line in Production
         if (res.data.ok && res.data.response) {
-          // Merge new data into the existing user object
           setUser((prevUser) => ({
             ...prevUser,
             ...res.data.response,
@@ -34,21 +39,13 @@ export const AuthProvider = ({ children }) => {
         }
       })
       .catch((err) => {
-        toast.error("You have been logged out. Please login again.");
-        logout();
+        setUser(null);
         console.error(err);
       });
   };
 
   useEffect(() => {
     loadUser();
-  }, [user?.token]);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      setUser({ token });
-    }
   }, []);
 
   return (

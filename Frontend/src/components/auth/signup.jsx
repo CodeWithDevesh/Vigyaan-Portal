@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import { Link } from "react-router";
-import axios from "axios";
 import { toast } from "react-toastify";
+import { api } from "../../helpers/api";
 const server = import.meta.env.VITE_SERVER_URL;
 import {
   CheckCircleIcon,
@@ -26,7 +26,7 @@ const Signup = ({ onClose = () => {} }) => {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const {login, user} = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
 
   const branches = ["CSE", "IT", "ECE", "EEE", "ME", "CE", "BT"];
   const years = Array.from({ length: 4 }, (_, i) => currentYear + i);
@@ -41,8 +41,8 @@ const Signup = ({ onClose = () => {} }) => {
   };
 
   const validateEmail = (email) => {
-    // return email.endsWith(".nitrr.ac.in");
-    return true
+    // return email.endsWith(".nitrr.ac.in"); // TODO: Uncomment this line in Production
+    return true;
   };
 
   const handleSubmit = async (e) => {
@@ -51,52 +51,51 @@ const Signup = ({ onClose = () => {} }) => {
     setIsLoading(true);
 
     try {
-        if(step == 1) {
-          if (!validateEmail(formData.email)) {
-            throw new Error("Please use your college email address");
-          }
-          formData.grad_year = formData.gradYear;
-          axios
-            .post(`${server}/vigyaanportal/v1/auth/signup`, formData)
-            .then((res) => {
-              setStep(2)
-              axios.post(`${server}/vigyaanportal/v1/auth/request-otp`, 
-                {
-                  email: email
-                }
-              ).then((res) => {
-                console.log(res.data)
-              }).catch((err) => {
-                setError(err.message || "Error while requesting OTP")
-              })
-            })
-            .catch((err) => {
-              console.log(err)
-              setError(err.response.data.message || "Error while signing up")
-            });
-        } else {
-          try {
-            if(!otp) {
-              setError("Please enter your OTP")
-            } else {
-              await axios.post(`${server}/vigyaanportal/v1/auth/verify-otp`, 
-                {
-                  otp: otp,
-                  userId: ""
-                }
-              ).then((res) => {
-                alert("Registration successful: Your account has been created!");
-                onClose();
-              }).catch((err) => {
-                setError(err.message || "Error while validating otp")
-                console.log(err)
-              })
-            }
-          } catch(err) {
-            setError(err.message || "Something went wrong")
-          }
+      if (step == 1) {
+        if (!validateEmail(formData.email)) {
+          throw new Error("Please use your college email address");
         }
-      
+        api
+          .post(`/auth/signup`, formData)
+          .then((res) => {
+            setStep(2);
+            api
+              .post(`/auth/request-otp`)
+              .then((res) => {
+                console.log(res.data);
+              })
+              .catch((err) => {
+                console.error(err.message || "Error while requesting OTP");
+              });
+          })
+          .catch((err) => {
+            console.log(err);
+            setError(err.response.data.message || "Error while signing up");
+          });
+      } else {
+        try {
+          if (!otp) {
+            setError("Please enter your OTP");
+          } else {
+            await api
+              .post(`/auth/verify-otp`, {
+                otp,
+              })
+              .then((res) => {
+                alert(
+                  "Registration successful: Your account has been created!"
+                );
+                onClose();
+              })
+              .catch((err) => {
+                setError(err.message || "Error while validating otp");
+                console.log(err);
+              });
+          }
+        } catch (err) {
+          setError(err.message || "Something went wrong");
+        }
+      }
     } catch (err) {
       setError(err.message || "An error occurred during registration");
     } finally {
@@ -105,23 +104,21 @@ const Signup = ({ onClose = () => {} }) => {
   };
 
   const resendOTP = async () => {
-    try {
-      await axios.get(`${server}/vigyaanportal/v1/auth/request-otp`, 
-        {
-          email: formData.email
-        }
-      ).then((res) => {
-        return true
+    api
+      .post(`/auth/request-otp`)
+      .then((res) => {
+        console.log(res);
+        return true;
       })
-    } catch(err) {
-      setError(err.message || "Error while requsting OTP")
-      return false
-    }
-  }
+      .catch((err) => {
+        setError(err.message || "Error while requsting OTP");
+        return false;
+      });
+  };
 
   const notify = (content) => {
-    toast(content)
-  }
+    toast(content);
+  };
 
   return (
     <div className="min-h-[80vh] w-screen mt-[100px] flex items-center justify-center bg-opacity-50">
@@ -280,7 +277,7 @@ const Signup = ({ onClose = () => {} }) => {
                       id="sem"
                       value={formData.grad_year}
                       onChange={(e) =>
-                        handleSelectChange("gradYear", e.target.value)
+                        handleSelectChange("grad_year", e.target.value)
                       }
                       className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
@@ -340,8 +337,8 @@ const Signup = ({ onClose = () => {} }) => {
                 <p className="text-sm text-gray-500 text-center">
                   Didn't receive the code?{" "}
                   <button
-                    onClick={() => {
-                      if(resendOTP) notify("OTP has been sent")
+                    onClick={async () => {
+                      if (await resendOTP()) notify("OTP has been sent");
                     }}
                     type="button"
                     className="text-black hover:text-gray-800 hover:cursor-pointer"

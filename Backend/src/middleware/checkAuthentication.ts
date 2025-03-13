@@ -12,7 +12,9 @@ const authenticateToken = async (
   res: Response,
   next: NextFunction
 ): Promise<void> => {
-  const token = req.cookies?.token;
+  const token = req.cookies?.auth_token;
+  console.log(req);
+  console.log(token);
   if (!token) {
     res.status(403).json({ message: "Invalid Token", ok: false });
     return;

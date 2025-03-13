@@ -38,10 +38,10 @@ const signup = async (req: Request, res: Response): Promise<any> => {
       }
     );
 
-    res.cookie("token", token, {
+    res.cookie("auth_token", token, {
       httpOnly: true,
       secure: false, // TODO: aim for https... so set it true later
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // Expires in 1 day
     });
 
@@ -105,10 +105,10 @@ const login = async (req: Request, res: Response): Promise<any> => {
       }
     );
 
-    res.cookie("token", token, {
+    res.cookie("auth_token", token, {
       httpOnly: true,
       secure: false, // TODO: aim for https... so set it true later
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: 24 * 60 * 60 * 1000, // Expires in 1 day
     });
 
@@ -134,9 +134,11 @@ const logout = async (req: Request, res: Response): Promise<any> => {
   });
 }
 
-const verify_otp = async (req: Request, res: Response): Promise<any> => {
+const verify_otp = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
   try {
-    const { otp, userId } = req.body;
+    const userId = req.userId;
+    const { otp } = req.body;
+    console.log(otp, userId);
     if (!userId) {
       return res.status(403).json({
         message: "UserId required!",
@@ -268,12 +270,14 @@ const change_password = async (
   }
 };
 
-const requestOTP = async (req: Request, res: Response): Promise<any> => {
+const requestOTP = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+  console.log("Requesting OTP");
   try {
-    const { email } = req.body;
-    const present = await userModel.findOne({ email });
+    const userId = req.userId;
+    const present = await userModel.findOne({ _id: userId });
     if (!present) throw new Error("User not found");
     const id = present._id;
+    const email = present.email;
     await sendOTP(email, id);
     res.status(200).json({ ok: true, message: "OTP sent successfully" });
   } catch (err) {

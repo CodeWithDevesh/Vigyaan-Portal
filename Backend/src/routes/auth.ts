@@ -14,8 +14,8 @@ todo:
 authRouter.post("/signup", signup);
 authRouter.post("/login", login);
 authRouter.post('/logout', logout);
-authRouter.post('/verify-otp', verify_otp)
-authRouter.post('/request-otp', requestOTP)
+authRouter.post('/verify-otp', authenticateToken,verify_otp)
+authRouter.post('/request-otp', authenticateToken,requestOTP)
 authRouter.post('/forgot-password', forgot_password)
 authRouter.post('/reset-password', reset_password)
 authRouter.post('/change-password',authenticateToken,change_password)
