@@ -9,10 +9,10 @@ function LoginForm() {
   const [isLoading, setIsLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const {login, user} = useContext(AuthContext);
+  const { login, user } = useContext(AuthContext);
 
   useEffect(() => {
-    if(user?.token) {
+    if (user) {
       navigate("/");
     }
   }, [user]);
@@ -21,10 +21,14 @@ function LoginForm() {
     event.preventDefault();
     setIsLoading(true);
     api
-      .post(`/auth/login`, {
-        email,
-        password,
-      }, {withCredentials: true})
+      .post(
+        `/auth/login`,
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      )
       .then((res) => {
         console.log(res);
         if (res.data.ok == true) {

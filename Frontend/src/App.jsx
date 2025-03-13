@@ -14,6 +14,7 @@ import { AuthProvider, AuthContext } from "./components/auth/AuthContext";
 import Otp from "./components/auth/otp";
 import NotVerified from "./components/auth/NotVerified";
 import { useContext } from "react";
+import ChangePass from "./pages/Profile/changePass";
 
 function App() {
   return (
@@ -37,8 +38,8 @@ function App() {
               <Route path="/projects" element={<Projects />} />
               <Route path="/login" element={<LoginPage />} />
               <Route path="/signup" element={<Signup />} />
-              <Route path="/settings" element={<Settings />} />
               <Route path="/profile" element={<Profile />} />
+              <Route path="/profile/changePass" element={<ChangePass />} />
               <Route path="/userdashboard" element={<UserDashboard />} />
               <Route path="/otp" element={<Otp />} />
               <Route path="*" element={<h1>404 Not Found</h1>} />

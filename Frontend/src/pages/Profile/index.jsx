@@ -218,7 +218,7 @@ function Profile() {
             Save
           </button>
           <Link
-            to="/changePass"
+            to="/profile/changePass"
             className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-950 transition"
           >
             Change Password

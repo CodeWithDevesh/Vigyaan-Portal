@@ -248,7 +248,7 @@ const change_password = async (
     const verifypass = await bcrypt.compare(old_pass, user.password);
     if (!verifypass) {
       return res.status(403).json({
-        message: "Invalid Password",
+        message: "Current Password is incorrect",
         ok: false,
       });
     }
