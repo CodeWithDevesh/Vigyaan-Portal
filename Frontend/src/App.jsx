@@ -10,8 +10,10 @@ import { ToastContainer } from "react-toastify";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import UserDashboard from "./pages/Dashboard/User";
-import { AuthProvider } from "./components/auth/AuthContext";
+import { AuthProvider, AuthContext } from "./components/auth/AuthContext";
 import Otp from "./components/auth/otp";
+import NotVerified from "./components/auth/NotVerified";
+import { useContext } from "react";
 
 function App() {
   return (
@@ -19,6 +21,7 @@ function App() {
       <BrowserRouter>
         <AuthProvider>
         <Navbar />
+        {<NotVerified />}
         <ToastContainer
           position="bottom-right"
           autoClose={2000}

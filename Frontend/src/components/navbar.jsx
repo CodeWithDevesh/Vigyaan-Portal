@@ -6,6 +6,7 @@ import { useNavigate } from "react-router";
 import multiavatar from "@multiavatar/multiavatar/esm";
 import { ProfileIcon, LogoutIcon } from "../components/icons";
 import { AuthContext } from "./auth/AuthContext";
+import { toast } from "react-toastify";
 
 function Navbar() {
   // const [token, setToken] = useState(localStorage.getItem("token"));
@@ -31,7 +32,7 @@ function Navbar() {
   };
 
   return (
-    <div className="h-[80px] grid grid-cols-3 bg-bg-1 items-center justify-items-center px-3 fixed top-0 left-0 right-0 text-2xl text-secondary font-bold font-poppins">
+    <div className="h-[80px] grid grid-cols-3 z-2 bg-bg-1 items-center justify-items-center px-3 fixed top-0 left-0 right-0 text-2xl text-secondary font-bold font-poppins">
       <div className="justify-self-start">
         <img className="h-[60px]" src={logo} alt="" />
       </div>
