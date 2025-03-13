@@ -11,6 +11,7 @@ import Settings from "./pages/Settings";
 import Profile from "./pages/Profile";
 import UserDashboard from "./pages/Dashboard/User";
 import { AuthProvider } from "./components/auth/AuthContext";
+import Otp from "./components/auth/otp";
 
 function App() {
   return (
@@ -36,6 +37,7 @@ function App() {
               <Route path="/settings" element={<Settings />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/userdashboard" element={<UserDashboard />} />
+              <Route path="/otp" element={<Otp />} />
               <Route path="*" element={<h1>404 Not Found</h1>} />
             </Routes>
           </AnimatePresence>

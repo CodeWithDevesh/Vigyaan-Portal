@@ -23,16 +23,18 @@ const signup = async (req: Request, res: Response): Promise<any> => {
 
     const newUser = new userModel({
       name,
-      email,  
+      email,
       password: hashedPassword,
       branch,
       grad_year,
     });
     await newUser.save();
     const id = newUser._id;
-    const token = "Bearer "+jwt.sign({ userId: id, role: "user" }, process.env.JWT_TOKEN!, {
-      expiresIn: "1h",
-    })
+    const token =
+      "Bearer " +
+      jwt.sign({ userId: id, role: "user" }, process.env.JWT_TOKEN!, {
+        expiresIn: "1h",
+      });
 
     return res.json({
       message: "Sign-up successful",
@@ -87,9 +89,11 @@ const login = async (req: Request, res: Response): Promise<any> => {
       });
     }
 
-    const token = "Bearer "+jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_TOKEN!, {
-      expiresIn: "1h",
-    });
+    const token =
+      "Bearer " +
+      jwt.sign({ userId: user._id, role: user.role }, process.env.JWT_TOKEN!, {
+        expiresIn: "1h",
+      });
 
     return res.status(200).json({
       message: "Login Successful!",
@@ -107,40 +111,57 @@ const login = async (req: Request, res: Response): Promise<any> => {
 };
 
 const verify_otp = async (req: Request, res: Response): Promise<any> => {
-  const { otp, userId } = req.body;
-  const user = await userOTPVerificationModel.findOne({ userId });
-  if (!user) {
-    return res.status(403).json({
-      message: "Invalid User! Try Signing Up!",
-      ok: false,
-    });
-  }
-  const verified = await bcrypt.compare(otp, user.otp!);
-  if (verified) {
-    const time = Date.now();
-    if (user.expiry! <= time) {
-      await userOTPVerificationModel.deleteOne({ userId });
+  try {
+    const { otp, userId } = req.body;
+    if (!userId) {
       return res.status(403).json({
-        message: "OTP EXPIRED!",
+        message: "UserId required!",
         ok: false,
       });
     }
-    await userOTPVerificationModel.deleteOne({ userId });
-    const actualUser = await userModel.findById(userId);
-    if (actualUser) {
-      await actualUser.updateOne({ verified: true });
+    const user = await userOTPVerificationModel.findOne({ userId });
+    if (!user) {
+      return res.status(403).json({
+        message: "Invalid User! Try Signing Up!",
+        ok: false,
+      });
     }
-    return res.status(200).json({
-      message: "Email Verified Via OTP",
-      ok: true,
+    const verified = await bcrypt.compare(otp, user.otp!);
+    if (verified) {
+      const time = Date.now();
+      if (user.expiry! <= time) {
+        await userOTPVerificationModel.deleteOne({ userId });
+        return res.status(403).json({
+          message: "OTP EXPIRED!",
+          ok: false,
+        });
+      }
+      await userOTPVerificationModel.deleteOne({ userId });
+      const actualUser = await userModel.findById(userId);
+      if (actualUser) {
+        await actualUser.updateOne({ verified: true });
+      }
+      return res.status(200).json({
+        message: "Email Verified Via OTP",
+        ok: true,
+      });
+    }
+    //might implement deletion or adding a counter for invalid otp
+    return res.status(403).json({
+      message: "Invalid OTP",
+      ok: false,
+    });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({
+      message: "Some Error occurred",
+      error: err,
+      ok: false,
     });
   }
-  //might implement deletion or adding a counter for invalid otp
-  return res.status(403).json({
-    message: "Invalid OTP",
-    ok: false,
-  });
 };
+
+
 const forgot_password = async (req: Request, res: Response): Promise<any> => {
   const { email } = req.body;
   const user = await userModel.findOne({ email });
@@ -187,64 +208,67 @@ interface AuthenticatedRequest extends Request {
   userId?: string;
   role?: string;
 }
-const change_password = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
-  try{
-    const {old_pass,new_pass} = req.body;
+const change_password = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    const { old_pass, new_pass } = req.body;
     const user = await userModel.findById(req.userId);
-    if(!user){
+    if (!user) {
       return res.status(404).json({
         message: "User not found",
-        ok: false
-      })
+        ok: false,
+      });
     }
     const verifypass = await bcrypt.compare(old_pass, user.password);
-    if(!verifypass){
+    if (!verifypass) {
       return res.status(403).json({
         message: "Invalid Password",
-        ok: false
-      })
+        ok: false,
+      });
     }
     const saltRounds = parseInt(process.env.BCRYPT_SALT!);
-    const hashedPassword = await bcrypt.hash(new_pass,saltRounds);
+    const hashedPassword = await bcrypt.hash(new_pass, saltRounds);
     user.password = hashedPassword;
     await user.save();
     return res.status(201).json({
       message: "Password Changed Successfully!",
-      ok: true
-    })
-  }catch(err){
+      ok: true,
+    });
+  } catch (err) {
     return res.status(500).json({
       message: "Some Error occurred",
       error: err,
-      ok: false
+      ok: false,
     });
   }
-}
+};
 
-const requestOTP  = async (req: Request, res: Response): Promise<any> => {
+const requestOTP = async (req: Request, res: Response): Promise<any> => {
   try {
     const { email } = req.body;
     const present = await userModel.findOne({ email });
-    if(!present) throw new Error("User not found");
-    const id = present._id
+    if (!present) throw new Error("User not found");
+    const id = present._id;
     await sendOTP(email, id);
-    res.status(200).json({ok: true, message: "OTP sent successfully"});
-  } catch(err) {
-      console.log(err)
-      res.status(500).json({
-        message: "Error while sending OTP",
-        error: err instanceof Error ? err.message : String(err),
-        ok: false
-      })
-    }
-}
+    res.status(200).json({ ok: true, message: "OTP sent successfully" });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Error while sending OTP",
+      error: err instanceof Error ? err.message : String(err),
+      ok: false,
+    });
+  }
+};
 
-export{
-    signup,
-    login,
-    verify_otp,
-    forgot_password,
-    reset_password,
-    change_password,
-    requestOTP
-}
+export {
+  signup,
+  login,
+  verify_otp,
+  forgot_password,
+  reset_password,
+  change_password,
+  requestOTP,
+};

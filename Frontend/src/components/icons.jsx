@@ -108,6 +108,17 @@ const ProfileIcon = () => (
   </svg>
 );
 
+const OtpIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    className="h-5 w-5 text-gray-400"
+    viewBox="0 0 20 20"
+    fill="currentColor"
+  >
+    <path d="M10 2a8 8 0 100 16 8 8 0 000-16zm1 11H9v-2h2v2zm0-4H9V5h2v4z" />
+  </svg>
+);
+
 export {
   CheckCircleIcon,
   GraduationCapIcon,
@@ -117,4 +128,5 @@ export {
   UserIcon,
   LogoutIcon,
   ProfileIcon,
+  OtpIcon,
 };
