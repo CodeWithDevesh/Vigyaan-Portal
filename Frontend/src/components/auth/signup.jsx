@@ -48,34 +48,67 @@ const Signup = ({ onClose = () => {} }) => {
     setIsLoading(true);
 
     try {
-      if (step === 1) {
-        if (!validateEmail(formData.email)) {
-          throw new Error("Please use your college email address");
+        if(step == 1) {
+          if (!validateEmail(formData.email)) {
+            throw new Error("Please use your college email address");
+          }
+  
+          axios
+            .post(`${server}/vigyaanportal/v1/auth/signup`, formData)
+            .then((res) => {
+              setStep(2)
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+        } else {
+          try {
+            if(!otp) {
+              setError("Please enter your OTP")
+            } else {
+              await axios.post(`${server}/vigyaanportal/v1/auth/verify-otp`, 
+                {
+                  otp: otp,
+                  userId: ""
+                }
+              ).then((res) => {
+                alert("Registration successful: Your account has been created!");
+                onClose();
+              }).catch((err) => {
+                setError(err.message || "Error while validating otp")
+                console.log(err)
+              })
+            }
+          } catch(err) {
+            setError(err.message || "Something went wrong")
+          }
         }
-
-        axios
-          .post(`${server}/vigyaanportal/v1/auth/signup`, formData)
-          .then((res) => {
-            console.log(res);
-          })
-          .catch((err) => {
-            console.log(err);
-          });
-      } else {
-        // Simulate OTP verification (replace this with your actual API call)
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // Simulate network delay
-        console.log("OTP verified:", otp);
-
-        // Show success message and close modal
-        alert("Registration successful: Your account has been created!");
-        onClose(); // Call the onClose function to close the modal
-      }
+      
     } catch (err) {
       setError(err.message || "An error occurred during registration");
     } finally {
       setIsLoading(false);
     }
   };
+
+  const resendOTP = async () => {
+    try {
+      await axios.get(`${server}/vigyaanportal/v1/auth/request-otp`, 
+        {
+          email: formData.email
+        }
+      ).then((res) => {
+        return true
+      })
+    } catch(err) {
+      setError(err.message || "Error while requsting OTP")
+      return false
+    }
+  }
+
+  const notify = (content) => {
+    toast(content)
+  }
 
   return (
     <div className="min-h-[80vh] w-screen mt-[100px] flex items-center justify-center bg-opacity-50">
@@ -294,8 +327,11 @@ const Signup = ({ onClose = () => {} }) => {
                 <p className="text-sm text-gray-500 text-center">
                   Didn't receive the code?{" "}
                   <button
+                    onClick={() => {
+                      if(resendOTP) notify("OTP has been sent")
+                    }}
                     type="button"
-                    className="text-black hover:text-gray-800"
+                    className="text-black hover:text-gray-800 hover:cursor-pointer"
                   >
                     Resend
                   </button>
