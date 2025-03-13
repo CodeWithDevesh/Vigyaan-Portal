@@ -138,7 +138,6 @@ const verify_otp = async (req: AuthenticatedRequest, res: Response): Promise<any
   try {
     const userId = req.userId;
     const { otp } = req.body;
-    console.log(otp, userId);
     if (!userId) {
       return res.status(403).json({
         message: "UserId required!",
@@ -271,7 +270,6 @@ const change_password = async (
 };
 
 const requestOTP = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
-  console.log("Requesting OTP");
   try {
     const userId = req.userId;
     const present = await userModel.findOne({ _id: userId });
