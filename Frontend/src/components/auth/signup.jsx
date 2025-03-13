@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { Link } from "react-router";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -11,6 +11,7 @@ import {
   MailIcon,
   UserIcon,
 } from "../icons";
+import { AuthContext } from "./AuthContext";
 
 const Signup = ({ onClose = () => {} }) => {
   const currentYear = new Date().getFullYear();
@@ -25,6 +26,7 @@ const Signup = ({ onClose = () => {} }) => {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
+  const {login, user} = useContext(AuthContext);
 
   const branches = ["CSE", "IT", "ECE", "EEE", "ME", "CE", "BT"];
   const years = Array.from({ length: 4 }, (_, i) => currentYear + i);
@@ -39,7 +41,8 @@ const Signup = ({ onClose = () => {} }) => {
   };
 
   const validateEmail = (email) => {
-    return email.endsWith(".nitrr.ac.in");
+    // return email.endsWith(".nitrr.ac.in");
+    return true
   };
 
   const handleSubmit = async (e) => {
@@ -52,7 +55,7 @@ const Signup = ({ onClose = () => {} }) => {
           if (!validateEmail(formData.email)) {
             throw new Error("Please use your college email address");
           }
-  
+          formData.grad_year = formData.gradYear;
           axios
             .post(`${server}/vigyaanportal/v1/auth/signup`, formData)
             .then((res) => {
