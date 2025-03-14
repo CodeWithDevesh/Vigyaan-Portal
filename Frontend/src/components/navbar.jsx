@@ -7,10 +7,11 @@ import multiavatar from "@multiavatar/multiavatar/esm";
 import { ProfileIcon, LogoutIcon } from "../components/icons";
 import { AuthContext } from "./auth/AuthContext";
 import { toast } from "react-toastify";
+import { LayoutDashboard } from "lucide-react";
 
 function Navbar() {
   // const [token, setToken] = useState(localStorage.getItem("token"));
-  const {user, logout} = useContext(AuthContext);
+  const { user, logout } = useContext(AuthContext);
   const [profileIcon, setProfileIcon] = useState(null);
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
@@ -70,6 +71,16 @@ function Navbar() {
                 onClick={handleBackdropClick}
               ></div>
               <div className="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-20">
+                <button
+                  className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
+                  onClick={() => {
+                    setShowMenu(false);
+                    navigate("/dashboard");
+                  }}
+                >
+                  <LayoutDashboard size={20} color="#99a1af" />
+                  Dashboard
+                </button>
                 <button
                   className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-2"
                   onClick={() => {

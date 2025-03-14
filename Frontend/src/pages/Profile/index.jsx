@@ -1,5 +1,5 @@
 import React, { use, useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import avatar from "@multiavatar/multiavatar";
 import {
   BookIcon,
@@ -11,6 +11,7 @@ import { AuthContext } from "../../components/auth/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { api } from "../../helpers/api";
+import { CircleX, CloudUpload, Key, Pencil } from "lucide-react";
 const server = import.meta.env.VITE_SERVER_URL;
 
 function Profile() {
@@ -22,14 +23,12 @@ function Profile() {
   const [branch, setBranch] = useState("");
   const [gradYear, setGradYear] = useState(new Date().getFullYear());
   const [profileIcon, setProfileIcon] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!user) {
-      // Reset to empty strings if user is not defined
-      setFullName("");
-      setEmail("");
-      setBranch("");
-      setGradYear(new Date().getFullYear());
+      // Redirect to login if user is not logged in
+      navigate("/login");
     } else {
       setFullName(user.name || "");
       setEmail(user.email || "");
@@ -197,30 +196,37 @@ function Profile() {
           </div>
         </div>
 
-        <div className="flex items-center space-x-4 mt-4">
+        <div className="flex items-center font-roboto space-x-4 mt-4">
           <button
             type="button"
             onClick={handleEditClick}
-            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition"
+            className="px-4 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition flex items-center gap-2"
           >
-            {isEditing ? "Cancel" : "Edit"}
+            <span>
+              {!isEditing ? <Pencil size={20} /> : <CircleX size={20} />}
+            </span>
+            <span>{isEditing ? "Cancel" : "Edit"}</span>
           </button>
           <button
             type="button"
             onClick={handleSaveClick}
             disabled={!isEditing}
-            className={`px-4 py-2 text-white rounded-lg transition ${
+            className={`px-4 py-2 text-white rounded-lg transition flex items-center gap-2 ${
               isEditing
                 ? "bg-green-500 hover:bg-green-600"
                 : "bg-gray-400 cursor-not-allowed"
             }`}
           >
+            <span>
+              <CloudUpload size={20} />
+            </span>
             Save
           </button>
           <Link
             to="/profile/changePass"
-            className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-950 transition"
+            className="px-4 py-2 bg-red-800 text-white rounded-lg hover:bg-red-950 transition flex items-center gap-2"
           >
+            <span><Key size={20}/></span>
             Change Password
           </Link>
         </div>

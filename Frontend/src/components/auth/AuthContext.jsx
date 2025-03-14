@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
       .finally(() => {});
   };
 
-  const loadUser = () => {
+  const loadUser = async () => {
     api
       .get(`/users/me`)
       .then((res) => {

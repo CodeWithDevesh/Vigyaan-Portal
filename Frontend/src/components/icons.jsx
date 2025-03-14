@@ -121,32 +121,21 @@ const OtpIcon = () => (
 
 const ErrorIcon = () => (
   <svg
-    viewBox="0 0 24 24"
     xmlns="http://www.w3.org/2000/svg"
-    className="h-5 w-5 text-red-600"
-    fill="#FFFFFF"
+    width="24"
+    height="24"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    stroke-width="2"
+    stroke-linecap="round"
+    stroke-linejoin="round"
+    class="lucide lucide-mail-warning"
   >
-    <path
-      d="M2.20164 18.4695L10.1643 4.00506C10.9021 2.66498 13.0979 2.66498 13.8357 4.00506L21.7984 18.4695C22.4443 19.6428 21.4598 21 19.9627 21H4.0373C2.54022 21 1.55571 19.6428 2.20164 18.4695Z"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      stroke="#EF4444"
-    />
-    <path
-      stroke="#EF4444"
-      d="M12 9V13"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
-    <path
-      stroke="#EF4444"
-      d="M12 17.0195V17"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-    />
+    <path d="M22 10.5V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v12c0 1.1.9 2 2 2h12.5" />
+    <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" />
+    <path d="M20 14v4" />
+    <path d="M20 22v.01" />
   </svg>
 );
 

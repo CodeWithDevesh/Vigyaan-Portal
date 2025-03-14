@@ -101,7 +101,7 @@ const login = async (req: Request, res: Response): Promise<any> => {
       { userId: user._id, role: user.role },
       process.env.JWT_TOKEN!,
       {
-        expiresIn: "1h",
+        expiresIn: "1d",
       }
     );
 
@@ -127,14 +127,17 @@ const login = async (req: Request, res: Response): Promise<any> => {
 };
 
 const logout = async (req: Request, res: Response): Promise<any> => {
-  res.clearCookie("token");
+  res.clearCookie("auth_token");
   return res.status(200).json({
     message: "Logout Successful!",
     ok: true,
   });
-}
+};
 
-const verify_otp = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+const verify_otp = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
   try {
     const userId = req.userId;
     const { otp } = req.body;
@@ -206,27 +209,43 @@ const forgot_password = async (req: Request, res: Response): Promise<any> => {
   res.json({ message: "Password reset email sent", ok: true });
 };
 const reset_password = async (req: Request, res: Response): Promise<any> => {
-  const { token, newPassword } = req.body;
+  try {
+    const { token, newPassword } = req.body;
 
-  const user = await userModel.findOne({
-    resetToken: token,
-    resetTokenExpires: { $gt: new Date() },
-  });
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        message: "Token and new password are required",
+        ok: false,
+      });
+    }
 
-  if (!user) {
-    return res
-      .status(400)
-      .json({ message: "Invalid or expired token", ok: false });
+    const user = await userModel.findOne({
+      resetToken: token,
+      resetTokenExpires: { $gt: new Date() },
+    });
+
+    if (!user) {
+      return res
+        .status(400)
+        .json({ message: "Invalid or expired token", ok: false });
+    }
+
+    const saltRounds = parseInt(process.env.BCRYPT_SALT!);
+    user.password = await bcrypt.hash(newPassword, saltRounds);
+
+    user.resetToken = undefined;
+    user.resetTokenExpires = undefined;
+    await user.save();
+
+    res.json({ message: "Password reset successful!", ok: true });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      message: "Some Error occurred",
+      error: err,
+      ok: false,
+    });
   }
-
-  const saltRounds = parseInt(process.env.BCRYPT_SALT!);
-  user.password = await bcrypt.hash(newPassword, saltRounds);
-
-  user.resetToken = undefined;
-  user.resetTokenExpires = undefined;
-  await user.save();
-
-  res.json({ message: "Password reset successful!", ok: true });
 };
 interface AuthenticatedRequest extends Request {
   userId?: string;
@@ -269,7 +288,10 @@ const change_password = async (
   }
 };
 
-const requestOTP = async (req: AuthenticatedRequest, res: Response): Promise<any> => {
+const requestOTP = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
   try {
     const userId = req.userId;
     const present = await userModel.findOne({ _id: userId });

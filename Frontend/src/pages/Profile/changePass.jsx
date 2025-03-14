@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../../components/auth/AuthContext";
 import { useNavigate, Link } from "react-router";
 import { api } from "../../helpers/api";
+import { KeyRound, KeySquare } from "lucide-react";
 
 function ChangePass() {
   const [currentPass, setCurrentPass] = useState("");
@@ -67,7 +68,7 @@ function ChangePass() {
           <Input
             type="password"
             placeholder="**********"
-            icon={<LockIcon />}
+            icon={<KeyRound size={16} color="#99a1af"/>}
             label={"Current Password"}
             value={currentPass}
             onChange={(e) => {
@@ -77,7 +78,7 @@ function ChangePass() {
           <Input
             type="password"
             placeholder="**********"
-            icon={<LockIcon />}
+            icon={<KeySquare size={16} color="#99a1af" />}
             label={"New Password"}
             value={newPass}
             onChange={(e) => {
@@ -87,7 +88,7 @@ function ChangePass() {
           <Input
             type="password"
             placeholder="**********"
-            icon={<LockIcon />}
+            icon={<KeySquare size={16} color="#99a1af"/>}
             label={"Confirm New Password"}
             value={confirmPass}
             onChange={(e) => {
