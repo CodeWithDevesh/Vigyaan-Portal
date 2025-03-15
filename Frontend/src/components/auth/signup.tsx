@@ -1,8 +1,7 @@
-import React, { useContext, useState } from "react";
+import { useState } from "react";
 import { Link } from "react-router";
 import { toast } from "react-toastify";
 import { api } from "../../helpers/api";
-const server = import.meta.env.VITE_SERVER_URL;
 import {
   CheckCircleIcon,
   GraduationCapIcon,
@@ -11,7 +10,6 @@ import {
   MailIcon,
   UserIcon,
 } from "../icons";
-import { AuthContext } from "./AuthContext";
 
 const Signup = ({ onClose = () => {} }) => {
   const currentYear = new Date().getFullYear();
@@ -26,26 +24,33 @@ const Signup = ({ onClose = () => {} }) => {
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const { login, user } = useContext(AuthContext);
 
   const branches = ["CSE", "IT", "ECE", "EEE", "ME", "CE", "BT"];
   const years = Array.from({ length: 4 }, (_, i) => currentYear + i);
 
-  const handleChange = (e) => {
+  interface FormData {
+    name: string;
+    email: string;
+    password: string;
+    branch: string;
+    grad_year: number;
+  }
+
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+    setFormData((prev: FormData) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSelectChange = (name: string, value: string) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSelectChange = (name, value) => {
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const validateEmail = (email: string): boolean => {
+    return email.endsWith(".nitrr.ac.in"); // TODO: Uncomment this line in Production
   };
 
-  const validateEmail = (email) => {
-    // return email.endsWith(".nitrr.ac.in"); // TODO: Uncomment this line in Production
-    return true;
-  };
-
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
@@ -57,7 +62,7 @@ const Signup = ({ onClose = () => {} }) => {
         }
         api
           .post(`/auth/signup`, formData)
-          .then((res) => {
+          .then(() => {
             setStep(2);
             api
               .post(`/auth/request-otp`)
@@ -81,7 +86,7 @@ const Signup = ({ onClose = () => {} }) => {
               .post(`/auth/verify-otp`, {
                 otp,
               })
-              .then((res) => {
+              .then(() => {
                 alert(
                   "Registration successful: Your account has been created!"
                 );
@@ -93,30 +98,38 @@ const Signup = ({ onClose = () => {} }) => {
               });
           }
         } catch (err) {
-          setError(err.message || "Something went wrong");
+          if (err instanceof Error) {
+            setError(err.message || "Something went wrong");
+          } else {
+            setError("Something went wrong");
+          }
         }
       }
     } catch (err) {
-      setError(err.message || "An error occurred during registration");
+      if (err instanceof Error) {
+        setError(err.message || "An error occurred during registration");
+      } else {
+        setError("An error occurred during registration");
+      }
     } finally {
       setIsLoading(false);
     }
   };
 
-  const resendOTP = async () => {
-    api
+  const resendOTP = async (): Promise<boolean> => {
+    return api
       .post(`/auth/request-otp`)
       .then((res) => {
         console.log(res);
         return true;
       })
       .catch((err) => {
-        setError(err.message || "Error while requsting OTP");
+        setError(err.message || "Error while requesting OTP");
         return false;
       });
   };
 
-  const notify = (content) => {
+  const notify = (content: string) => {
     toast(content);
   };
 
@@ -338,7 +351,8 @@ const Signup = ({ onClose = () => {} }) => {
                   Didn't receive the code?{" "}
                   <button
                     onClick={async () => {
-                      if (await resendOTP()) notify("OTP has been sent");
+                      const otpSent = await resendOTP();
+                      if (otpSent) notify("OTP has been sent");
                     }}
                     type="button"
                     className="text-black hover:text-gray-800 hover:cursor-pointer"

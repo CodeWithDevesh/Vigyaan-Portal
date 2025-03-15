@@ -1,18 +1,16 @@
 import { useContext, useEffect, useState } from "react";
 import logo from "../assets/Images/l.png";
 import { Link } from "react-router";
-import pi from "../assets/Images/profile.png";
 import { useNavigate } from "react-router";
 import multiavatar from "@multiavatar/multiavatar/esm";
-import { ProfileIcon, LogoutIcon } from "../components/icons";
+import { ProfileIcon, LogoutIcon } from "./icons";
 import { AuthContext } from "./auth/AuthContext";
-import { toast } from "react-toastify";
 import { LayoutDashboard } from "lucide-react";
 
 function Navbar() {
   // const [token, setToken] = useState(localStorage.getItem("token"));
   const { user, logout } = useContext(AuthContext);
-  const [profileIcon, setProfileIcon] = useState(null);
+  const [profileIcon, setProfileIcon] = useState("");
   const [showMenu, setShowMenu] = useState(false);
   const navigate = useNavigate();
 

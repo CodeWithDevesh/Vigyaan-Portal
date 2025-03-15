@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import { useContext } from "react";
 import { ErrorIcon } from "../icons";
 import { Link } from "react-router";
 import { AuthContext } from "./AuthContext";

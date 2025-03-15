@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "./AuthContext";
 import { api } from "../../helpers/api";
 import Input from "../Input";
-import { Key, KeyRound, Mail } from "lucide-react";
+import { KeyRound, Mail } from "lucide-react";
 
 function LoginForm() {
   const navigate = useNavigate();
@@ -19,7 +19,7 @@ function LoginForm() {
     }
   }, [user]);
 
-  async function handleSubmit(event) {
+  async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setIsLoading(true);
     api
@@ -60,7 +60,7 @@ function LoginForm() {
             label={"Email"}
             icon={<Mail size={20} />}
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
             id={"mail"}
             placeholder={"namebtech@branch.nitrr.ac.in"}
           />
@@ -69,7 +69,7 @@ function LoginForm() {
             label={"Password"}
             icon={<KeyRound size={20} />}
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
             id={"password"}
             placeholder={"namebtech@branch.nitrr.ac.in"}
           />

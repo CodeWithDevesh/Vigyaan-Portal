@@ -1,6 +1,16 @@
 import React from "react";
 
-function Input({ icon, placeholder, value, onChange, label, type, id }) {
+interface InputProps {
+  icon: React.ReactNode;
+  placeholder: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  label: string;
+  type: string;
+  id: string;
+}
+
+function Input({ icon, placeholder, value, onChange, label, type, id }: InputProps) {
   return (
     <div className="space-y-1">
       <label htmlFor={id} className="text-sm font-medium text-gray-700">

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Input from "../../components/Input";
 import { KeyRound, Mail, SquareAsterisk } from "lucide-react";
@@ -23,7 +23,7 @@ const ForgotPass = () => {
     if (user) logout();
   }, []);
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     try {
@@ -115,6 +115,7 @@ const ForgotPass = () => {
               <>
                 <Input
                   icon={<Mail size={20} color="#99a1af" />}
+                  placeholder=""
                   label={"Email"}
                   type="email"
                   id="email"
@@ -129,6 +130,7 @@ const ForgotPass = () => {
                 <Input
                   icon={<SquareAsterisk size={20} color="#99a1af" />}
                   label={"Verification Token"}
+                  placeholder=""
                   type="text"
                   id="token"
                   value={token}
@@ -137,6 +139,7 @@ const ForgotPass = () => {
                 <Input
                   icon={<KeyRound size={20} color="#99a1af" />}
                   label={"New Password"}
+                  placeholder=""
                   type="password"
                   id="newPass"
                   value={newPass}
@@ -145,6 +148,7 @@ const ForgotPass = () => {
                 <Input
                   icon={<KeyRound size={20} color="#99a1af" />}
                   label={"Confirm Password"}
+                  placeholder=""
                   type="password"
                   id="confirmPass"
                   value={confirmPass}

@@ -8,8 +8,7 @@ import Signup from "./components/auth/signup";
 import LoginPage from "./pages/Login";
 import { ToastContainer } from "react-toastify";
 import Profile from "./pages/Profile";
-import { AuthProvider, AuthContext } from "./components/auth/AuthContext";
-import Otp from "./components/auth/otp";
+import { AuthProvider } from "./components/auth/AuthContext";
 import NotVerified from "./components/auth/NotVerified";
 import ChangePass from "./pages/Profile/changePass";
 import ForgotPass from "./pages/Profile/forgotPass";
@@ -40,7 +39,6 @@ function App() {
               <Route path="/profile" element={<Profile />} />
               <Route path="/profile/changePass" element={<ChangePass />} />
               <Route path="/dashboard" element={<Dashboard />} />
-              <Route path="/otp" element={<Otp />} />
               <Route path="/forgotPass" element={<ForgotPass />} />
               <Route
                 path="*"

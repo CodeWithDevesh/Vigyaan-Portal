@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../components/auth/AuthContext";
 import { useNavigate } from "react-router";
 import WinnersDashboard from "./Winner";
@@ -7,7 +7,7 @@ function Dashboard() {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const [role, setRole] = useState("");
-  const timeoutRef = useRef(null);
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   useEffect(() => {
     if (!user) {

@@ -69,10 +69,11 @@ const sendDm = async (req: Request, res: Response): Promise<any> => {
 
 const getProjects = async (req: Request, res: Response): Promise<any> => {
   try {
-    const { status, branch } = req.query;
+    const { status, branch, email } = req.query;
     const filters: any = {};
     if (status) filters.status = status;
     if (branch) filters.branch = branch;
+    if (email) filters.created_by = email;
 
     const resp = await projectModel.find(filters);
     return res.json({

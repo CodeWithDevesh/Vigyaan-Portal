@@ -1,11 +1,17 @@
-import React, { useEffect, useState } from "react";
-import axios from "axios";
-import { toast } from "react-toastify";
+import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
+import { api } from "../../helpers/api";
 
-const WinnersDashboard = ({ userId }) => {
-  const [projects, setProjects] = useState([]);
+interface Project {
+  _id: string;
+  title: string;
+  description: string;
+  image: string;
+}
+
+const WinnersDashboard = () => {
+  const [projects, setProjects] = useState<Project[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const navigate = useNavigate();
@@ -14,10 +20,9 @@ const WinnersDashboard = ({ userId }) => {
   useEffect(() => {
     const fetchProjects = async () => {
       try {
-        const response = await axios.get(
-          `https://your-backend-api.com/projects/winner/${userId}`
-        );
-        setProjects(response.data.projects);
+        const response = await api.get(`/projects`);
+        console.log(response.data);
+        setProjects(response.data.response);
       } catch (err) {
         setError("Failed to load projects.");
       }
@@ -25,26 +30,14 @@ const WinnersDashboard = ({ userId }) => {
     };
 
     fetchProjects();
-  }, [userId]);
+  }, []);
 
   // Handle project removal
-  const removeProject = async (projectId) => {
+  const removeProject = async (_projectId: string) => {
     if (!window.confirm("Are you sure you want to remove this project?"))
       return;
 
-    try {
-      await axios.delete(
-        `https://your-backend-api.com/projects/delete/${projectId}`,
-        {
-          headers: { Authorization: `Bearer ${userId}` },
-        }
-      );
-
-      setProjects(projects.filter((project) => project._id !== projectId));
-      toast.success("Project removed successfully!");
-    } catch (err) {
-      toast.error("Failed to remove project.");
-    }
+    //TODO: Remove project from backend
   };
 
   return (

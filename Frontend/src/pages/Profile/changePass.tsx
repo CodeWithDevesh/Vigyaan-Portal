@@ -1,5 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
-import { LockIcon } from "../../components/icons";
+import { useContext, useEffect, useState } from "react";
 import Input from "../../components/Input";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../components/auth/AuthContext";
@@ -19,7 +18,7 @@ function ChangePass() {
     if (!user) navigate("/login");
   }, [user]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (newPass !== confirmPass) {
@@ -66,6 +65,7 @@ function ChangePass() {
 
         <form className="space-y-4 p-6" onSubmit={handleSubmit}>
           <Input
+            id="currentPass"
             type="password"
             placeholder="**********"
             icon={<KeyRound size={16} color="#99a1af"/>}
@@ -76,6 +76,7 @@ function ChangePass() {
             }}
           />
           <Input
+            id="newPass"
             type="password"
             placeholder="**********"
             icon={<KeySquare size={16} color="#99a1af" />}
@@ -86,6 +87,7 @@ function ChangePass() {
             }}
           />
           <Input
+            id="confirmPass"
             type="password"
             placeholder="**********"
             icon={<KeySquare size={16} color="#99a1af"/>}

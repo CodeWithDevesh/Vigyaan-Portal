@@ -1,4 +1,4 @@
-import React, { use, useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import avatar from "@multiavatar/multiavatar";
 import {
@@ -8,11 +8,9 @@ import {
   GraduationCapIcon,
 } from "../../components/icons";
 import { AuthContext } from "../../components/auth/AuthContext";
-import axios from "axios";
 import { toast } from "react-toastify";
 import { api } from "../../helpers/api";
 import { CircleX, CloudUpload, Key, Pencil } from "lucide-react";
-const server = import.meta.env.VITE_SERVER_URL;
 
 function Profile() {
   const { user, loadUser } = useContext(AuthContext);
@@ -21,8 +19,8 @@ function Profile() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [branch, setBranch] = useState("");
-  const [gradYear, setGradYear] = useState(new Date().getFullYear());
-  const [profileIcon, setProfileIcon] = useState(null);
+  const [gradYear, setGradYear] = useState(new Date().getFullYear().toString());
+  const [profileIcon, setProfileIcon] = useState("");
   const navigate = useNavigate();
 
   useEffect(() => {

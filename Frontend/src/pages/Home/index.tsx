@@ -1,4 +1,3 @@
-import React from "react";
 import iiIcon from "../../assets/Images/innovative-ideas.png";
 import cIcon from "../../assets/Images/collaboration.png";
 import lIcon from "../../assets/Images/launch.png";

@@ -1,11 +1,24 @@
 import { createContext, useState, useEffect } from "react";
-const server = import.meta.env.VITE_SERVER_URL;
 import { toast } from "react-toastify";
 import { api } from "../../helpers/api";
 
-export const AuthContext = createContext();
+interface AuthContextType {
+  user: any;
+  login: () => void;
+  logout: () => void;
+  loadUser: () => void;
+}
 
-export const AuthProvider = ({ children }) => {
+export const AuthContext = createContext<AuthContextType>({
+  user: null,
+  login: () => {},
+  logout: () => {},
+  loadUser: () => {},
+});
+
+import { ReactNode } from "react";
+
+export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState(null);
 
   const login = () => {
@@ -15,7 +28,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     api
       .post(`/auth/logout`)
-      .then((res) => {
+      .then(() => {
         toast("Logged out successfully!");
         setUser(null);
       })
@@ -33,7 +46,7 @@ export const AuthProvider = ({ children }) => {
         console.log(res.data); // TODO: Remove this line in Production
         if (res.data.ok && res.data.response) {
           setUser((prevUser) => ({
-            ...prevUser,
+            ...(prevUser || {}),
             ...res.data.response,
           }));
         }
