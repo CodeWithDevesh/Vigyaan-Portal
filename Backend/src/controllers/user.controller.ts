@@ -5,7 +5,9 @@ import {
   requestModel,
   userModel,
 } from "../models/models";
-
+import { CustomRequest } from "..";
+import dotenv from "dotenv";
+dotenv.config();
 const projectRequest = async (req: Request, res: Response): Promise<any> => {
   const { project_id, requested_by } = req.body;
 
@@ -137,18 +139,43 @@ interface AuthenticatedRequest extends Request {
   role?: string;
 }
 const createProject = async (
-  req: AuthenticatedRequest,
+  req: CustomRequest,
   res: Response
 ): Promise<any> => {
   try {
-    const { problemId, title, problem_statement, description, branch, image } =
+    const { problemId, title, problem_statement, description, branch } =
       req.body;
+    const file = req.file;
     const project = await projectModel.findOne({ problemId });
     if (project) {
       return res.status(409).json({
         message: "Problem already uploaded.",
         ok: false,
       });
+    }
+    let imageUrl: string|null=null;
+    if(file){
+      try {
+        const admin = req.admin!;
+        const bucket = admin.storage().bucket();
+        const folderPath = `${process.env.DB}/vigyaanPortal/images/${req.userId}`;
+        const fileName = `${problemId}`;
+        const fileUpload = bucket.file(`${folderPath}/${fileName}`);
+    
+        await fileUpload.save(file.buffer, {
+          contentType: file.mimetype,
+        });
+    
+        const [url] = await fileUpload.getSignedUrl({
+          action: "read",
+          expires: "01-12-2026",
+        });
+        imageUrl = url;
+      } catch (err) {
+        return res
+          .status(500)
+          .json({ ok: false, message: "Error uploading abstract", error: err });
+      }
     }
     const projectData = {
       problemId,
@@ -157,7 +184,7 @@ const createProject = async (
       description,
       branch,
       created_by: req.userId,
-      image: image || null,
+      image: imageUrl
     };
     const newProject = new projectModel(projectData);
     await newProject.save();
