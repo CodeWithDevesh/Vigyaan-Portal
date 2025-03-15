@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../components/auth/AuthContext";
 import { useNavigate } from "react-router";
+import WinnersDashboard from "./Winner";
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -28,9 +29,7 @@ function Dashboard() {
 
   return (
     <div className="mt-[80px]">
-      <h1>Dashboard</h1>
-      <h2>Welcome, {user?.name}</h2>
-      <h3>Your Role: {role}</h3>
+      {role === "winner" && <WinnersDashboard/>}
     </div>
   );
 }

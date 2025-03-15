@@ -1,7 +1,5 @@
 import { NextFunction, Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import dotenv from 'dotenv';
-import { userModel } from "../models/models";
 dotenv.config();
 interface AuthenticatedRequest extends Request {
   userId?: string;
