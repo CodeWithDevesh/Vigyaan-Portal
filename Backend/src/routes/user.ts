@@ -19,11 +19,12 @@ const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 const projectsRouter = Router();
+projectsRouter.get("/projects", getProjects); //
+
 projectsRouter.use(checkAuthentication);
 
 // projectsRouter.post("/requests", projectRedquest);//
 projectsRouter.post("/senddm", sendDm);
-projectsRouter.get("/projects", getProjects); //
 projectsRouter.get("/projects/:id", getProject); //
 projectsRouter.post("/requests", request); //
 projectsRouter.get("/users/me", getProfile); //

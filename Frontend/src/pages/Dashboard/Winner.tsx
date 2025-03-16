@@ -2,12 +2,20 @@ import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
 import { useNavigate } from "react-router-dom";
 import { api } from "../../helpers/api";
+import ProjectCard from "@/components/projects/Card";
 
 interface Project {
   _id: string;
   title: string;
-  description: string;
   image: string;
+  assigned_to: string;
+  created_by: string;
+  createdAt: string;
+  description: string;
+  problemId: string;
+  problem_statement: string;
+  updatedAt: string;
+  status: string;
 }
 
 const WinnersDashboard = () => {
@@ -53,28 +61,19 @@ const WinnersDashboard = () => {
             {projects.length === 0 ? (
               <p className="text-gray-600">No projects added yet.</p>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 gap-4">
                 {projects.map((project) => (
-                  <div
+                  <ProjectCard
                     key={project._id}
-                    className="bg-white p-4 rounded-lg shadow-md"
-                  >
-                    <img
-                      src={project.image}
-                      alt={project.title}
-                      className="w-full h-40 object-cover rounded-md mb-2"
-                    />
-                    <h3 className="text-lg font-bold">{project.title}</h3>
-                    <p className="text-sm text-gray-600">
-                      {project.description.slice(0, 100)}...
-                    </p>
-                    <button
-                      onClick={() => removeProject(project._id)}
-                      className="mt-2 w-full bg-red-500 text-white p-2 rounded-lg"
-                    >
-                      ❌ Remove Project
-                    </button>
-                  </div>
+                    title={project.title}
+                    description={project.description}
+                    image={project.image}
+                    problemId={project._id}
+                    status={project.status}
+                    created_by="Admin"
+                    branch="Master"
+                    assigned_to="Admin"
+                  />
                 ))}
               </div>
             )}

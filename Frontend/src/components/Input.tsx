@@ -5,12 +5,22 @@ interface InputProps {
   placeholder: string;
   value: string;
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-  label: string;
+  label?: string;
   type: string;
   id: string;
+  className?: string;
 }
 
-function Input({ icon, placeholder, value, onChange, label, type, id }: InputProps) {
+function Input({
+  icon,
+  placeholder,
+  value,
+  onChange,
+  label,
+  type,
+  id,
+  className,
+}: InputProps) {
   return (
     <div className="space-y-1">
       <label htmlFor={id} className="text-sm font-medium text-gray-700">
@@ -27,7 +37,7 @@ function Input({ icon, placeholder, value, onChange, label, type, id }: InputPro
           placeholder={placeholder}
           value={value}
           onChange={onChange}
-          className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+          className={`w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black ${className}`}
           required
         />
       </div>
