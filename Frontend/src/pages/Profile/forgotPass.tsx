@@ -10,13 +10,11 @@ const ForgotPass = () => {
   const [email, setEmail] = useState("");
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-
   const [token, setToken] = useState("");
   const [newPass, setNewPass] = useState("");
   const [confirmPass, setConfirmPass] = useState("");
 
   const { user, logout } = useContext(AuthContext);
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -28,167 +26,120 @@ const ForgotPass = () => {
     setIsLoading(true);
     try {
       if (step === 1) {
-        api
-          .post("/auth/forgot-password", { email })
+        api.post("/auth/forgot-password", { email })
           .then((res) => {
             if (res.data.ok) {
               toast.success("Password reset email sent successfully.");
               setStep(2);
             } else {
-              toast.error(
-                res.data.message ||
-                  "Failed to send password reset email. Please try again."
-              );
+              toast.error(res.data.message || "Failed to send reset email.");
             }
           })
-          .catch((err) => {
-            console.error(err);
-            toast.error(
-              err.response?.data.message ||
-                "Failed to send password reset email. Please try again."
-            );
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
+          .catch((err) => toast.error(err.response?.data.message || "Error"))
+          .finally(() => setIsLoading(false));
       } else {
         if (newPass !== confirmPass) {
           toast.error("Passwords do not match");
           setIsLoading(false);
           return;
         }
-
-        api
-          .post("/auth/reset-password", { token, newPassword: newPass })
+        api.post("/auth/reset-password", { token, newPassword: newPass })
           .then((res) => {
             if (res.data.ok) {
               toast.success("Password reset successfully. Please login.");
               navigate("/login");
             } else {
-              toast.error(
-                res.data.message ||
-                  "Failed to reset password. Please try again."
-              );
+              toast.error(res.data.message || "Failed to reset password.");
             }
           })
-          .catch((err) => {
-            console.error(err);
-            toast.error(
-              err.response?.data.message ||
-                "Failed to reset password. Please try again."
-            );
-          })
-          .finally(() => {
-            setIsLoading(false);
-          });
+          .catch((err) => toast.error(err.response?.data.message || "Error"))
+          .finally(() => setIsLoading(false));
       }
     } catch (error) {
       toast.error("Something went wrong. Please try again.");
-      console.error(error);
     }
   };
 
   return (
-    <div className="min-h-[80vh] w-screen mt-[100px] flex items-center justify-center bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-[0px_35px_35px_rgba(0,0,0,0.4)] w-full max-w-sm overflow-hidden">
+    <div className="min-h-screen flex items-center justify-center px-4 sm:px-6 lg:px-8 bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-lg w-full max-w-sm sm:max-w-md md:max-w-lg p-6 sm:p-8 overflow-hidden">
         {/* Progress Bar */}
         <div className="w-full h-1 bg-gray-200">
-          <div
-            className={`h-1 bg-primary transition-all duration-500 ease-in-out ${
-              step === 1 ? "w-1/2" : "w-full"
-            }`}
-          ></div>
+          <div className={`h-1 bg-primary transition-all duration-500 ${step === 1 ? "w-1/2" : "w-full"}`}></div>
         </div>
-        <div className="p-6 pb-0">
-          <h2 className="text-xl font-bold text-primary">
+        
+        <div className="text-center mt-4">
+          <h2 className="text-lg sm:text-xl font-bold text-primary">
             {step === 1 ? "Get Reset Token" : "Reset Password"}
           </h2>
           <p className="text-sm text-gray-600 mt-1">
-            {step === 1
-              ? "Enter Your Email"
-              : "Enter the verification token sent to your email"}
+            {step === 1 ? "Enter Your Email" : "Enter the verification token"}
           </p>
         </div>
-        <div>
-          <form onSubmit={handleSubmit} className="p-6 space-y-2 pb-2">
-            {step === 1 && (
-              <>
-                <Input
-                  icon={<Mail size={20} color="#99a1af" />}
-                  placeholder=""
-                  label={"Email"}
-                  type="email"
-                  id="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </>
-            )}
-
-            {step === 2 && (
-              <>
-                <Input
-                  icon={<SquareAsterisk size={20} color="#99a1af" />}
-                  label={"Verification Token"}
-                  placeholder=""
-                  type="text"
-                  id="token"
-                  value={token}
-                  onChange={(e) => setToken(e.target.value)}
-                />
-                <Input
-                  icon={<KeyRound size={20} color="#99a1af" />}
-                  label={"New Password"}
-                  placeholder=""
-                  type="password"
-                  id="newPass"
-                  value={newPass}
-                  onChange={(e) => setNewPass(e.target.value)}
-                />
-                <Input
-                  icon={<KeyRound size={20} color="#99a1af" />}
-                  label={"Confirm Password"}
-                  placeholder=""
-                  type="password"
-                  id="confirmPass"
-                  value={confirmPass}
-                  onChange={(e) => setConfirmPass(e.target.value)}
-                />
-              </>
-            )}
-
-            <div className="mt-6">
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="w-full py-2 px-4 rounded-md bg-black text-white font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black"
-              >
-                {isLoading
-                  ? "Processing..."
-                  : step === 1
-                  ? "Send"
-                  : "Change Password"}
-              </button>
-            </div>
-
-            {step === 1 && (
-              <div
-                className="ml-auto text-sm font-rubik mt-6 w-fit cursor-pointer"
-                onClick={() => setStep(2)}
-              >
-                Already Got a Token??
-              </div>
-            )}
-            {step === 2 && (
-              <div
-                className="mr-auto text-sm font-rubik mt-6 w-fit cursor-pointer"
-                onClick={() => setStep(1)}
-              >
-                Did not get a token??
-              </div>
-            )}
-          </form>
-        </div>
+        
+        <form onSubmit={handleSubmit} className="mt-4 space-y-3">
+          {step === 1 && (
+            <Input
+              icon={<Mail size={20} color="#99a1af" />}
+              label="Email"
+              type="email"
+              id="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder=""
+            />
+          )}
+          {step === 2 && (
+            <>
+              <Input
+                icon={<SquareAsterisk size={20} color="#99a1af" />}
+                label="Verification Token"
+                type="text"
+                id="token"
+                value={token}
+                onChange={(e) => setToken(e.target.value)}
+                placeholder=""
+              />
+              <Input
+                icon={<KeyRound size={20} color="#99a1af" />}
+                label="New Password"
+                type="password"
+                id="newPass"
+                value={newPass}
+                onChange={(e) => setNewPass(e.target.value)}
+                placeholder=""
+              />
+              <Input
+                icon={<KeyRound size={20} color="#99a1af" />}
+                label="Confirm Password"
+                type="password"
+                id="confirmPass"
+                value={confirmPass}
+                onChange={(e) => setConfirmPass(e.target.value)}
+                placeholder=""
+              />
+            </>
+          )}
+          
+          <button
+            type="submit"
+            disabled={isLoading}
+            className="w-full py-2 rounded-md bg-black text-white font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black"
+          >
+            {isLoading ? "Processing..." : step === 1 ? "Send" : "Change Password"}
+          </button>
+          
+          {step === 1 && (
+            <p className="text-sm text-center mt-4 cursor-pointer" onClick={() => setStep(2)}>
+              Already Got a Token?
+            </p>
+          )}
+          {step === 2 && (
+            <p className="text-sm text-center mt-4 cursor-pointer" onClick={() => setStep(1)}>
+              Didn't get a token?
+            </p>
+          )}
+        </form>
       </div>
     </div>
   );
