@@ -155,12 +155,14 @@ const createProject = async (
       });
     }
     let imageUrl: string|null=null;
+    let filePath: string|null=null;
     if(file){
       try {
         const admin = req.admin!;
         const bucket = admin.storage().bucket();
         const folderPath = `${process.env.DB}/vigyaanPortal/images/${req.userId}`;
         const fileName = `${problemId}`;
+        filePath = `${folderPath}/${fileName}`;
         const fileUpload = bucket.file(`${folderPath}/${fileName}`);
     
         await fileUpload.save(file.buffer, {
@@ -188,13 +190,29 @@ const createProject = async (
       image: imageUrl
     };
     const newProject = new projectModel(projectData);
-    await newProject.save();
+    try{
+      await newProject.save();
+    }catch(err){
+      if(filePath){
+        const admin = req.admin!;
+        await admin.storage().bucket().file(filePath).delete();
+      }
+      return res.status(500).json({
+        message: "Error saving project to database",
+        error: err,
+        ok: false,
+      });
+    }
     const updatedUser = await userModel.findByIdAndUpdate(
       req.userId,
       { $push: { projects_created: newProject._id } },
       { new: true }
     );
     if (!updatedUser) {
+      if(filePath){
+        const admin = req.admin!;
+        await admin.storage().bucket().file(filePath).delete();
+      }
       await projectModel.deleteOne({ problemId });
       return res.status(404).json({
         message: "User not found",
