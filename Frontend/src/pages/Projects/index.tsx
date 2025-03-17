@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
-import { useNavigate } from "react-router-dom";
 import { api } from "../../helpers/api";
 import ProjectCard from "@/components/projects/Card";
 import SearchBar from "@/components/Search";
@@ -73,25 +72,13 @@ const Projects = () => {
   }, [status, branch, search, projects]);
 
   return (
-    <div className="mt-[120px] min-h-[80vh] w-screen">
-      <h1 className="text-5xl font-bold font-rubik underline text-primary text-center mb-6">
+    <div className="mt-[100px] sm:mt-[120px] min-h-[80vh] w-screen">
+      <h1 className="text-3xl sm:text-5xl font-bold font-rubik underline text-primary text-center mb-2 sm:mb-5">
         Projects
       </h1>
 
-      {/* <div className="max-w-sm justify-self-end mr-6 mb-10">
-          <Input
-            id="search"
-            icon={<Search size={20} />}
-            placeholder="Search"
-            type="text"
-            onChange={(e) => {
-              setSearch(e.target.value);
-              }}
-              value={search}
-              />
-              </div> */}
-      <div className="max-w-4xl mx-auto p-6 rounded-lg">
-        <div className="mb-8 w-full justify-self-start px-2 flex justify-between items-center">
+      <div className="w-[90vw] max-w-4xl mx-auto p-6 rounded-lg">
+        <div className="mb-8 w-full justify-self-start px-2 flex flex-col justify-center items-end gap-3 sm:flex-row sm:justify-between sm:items-center">
           <SearchBar
             onSearch={(e) => {
               setSearch(e);
@@ -149,6 +136,7 @@ const Projects = () => {
               <div className="grid grid-cols-1 gap-6">
                 {filteredProjects.map((project) => (
                   <ProjectCard
+                    projectId={project._id}
                     key={project._id}
                     title={project.title}
                     description={project.description}

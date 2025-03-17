@@ -6,6 +6,7 @@ import multiavatar from "@multiavatar/multiavatar/esm";
 import { ProfileIcon, LogoutIcon } from "./icons";
 import { AuthContext } from "./auth/AuthContext";
 import { LayoutDashboard } from "lucide-react";
+import pi from '@/assets/Images/profile.png'
 
 function Navbar() {
   // const [token, setToken] = useState(localStorage.getItem("token"));
@@ -37,22 +38,29 @@ function Navbar() {
       </div>
       <div className="flex space-x-7 ml-7">
         <Link to={"/"} className="nav-item-cont ">
-          <div className="nav-item rotate-3">Home</div>
+          <div className="nav-item rotate-3 text-xs lg:text-lg">Home</div>
         </Link>
 
         <Link to={"/projects"} className="nav-item-cont">
-          <div className=" nav-item rotate-[-5deg]">Projects</div>
+          <div className=" nav-item rotate-[-5deg] text-xs lg:text-lg">Projects</div>
         </Link>
       </div>
 
       {!user && (
+        <>
         <Link
           to={"/login"}
-          className="justify-self-end mr-4 bg-primary text-bg-1 py-1 px-[10px] rounded-2xl hover:scale-110 active:scale-90 transition-all text-xl"
+          className="justify-self-end mr-4 bg-primary text-bg-1 py-1 px-[10px] rounded-2xl hover:scale-110 active:scale-90 transition-all text-xl hidden lg:block"
           style={{ boxShadow: "4px 5px 5px rgba(0, 0, 0, .4)" }}
         >
           Sign In
         </Link>
+        <Link 
+        to={"/login"}
+        className="justify-self-end block lg:hidden">
+          <img src={pi} height={30} width={30} alt="profile" />
+        </Link>
+        </>
       )}
       {user && (
         <div className="relative justify-self-end">

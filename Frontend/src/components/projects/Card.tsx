@@ -8,9 +8,10 @@ import ProjectCardTrigger from "./CardTrigger";
 import { useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
 import { Button } from "../ui/button";
-import { stat } from "fs";
+import { useNavigate } from "react-router";
 
 interface ProjectCardProps {
+  projectId: string;
   problemId: string;
   title: string;
   description: string;
@@ -21,6 +22,7 @@ interface ProjectCardProps {
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
+  projectId,
   problemId,
   problem_statement,
   title,
@@ -29,13 +31,12 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   status,
   branch,
 }) => {
-
-  const {user} = useContext(AuthContext);
-
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <div className="flex w-full h-full space-x-2 select-none border-primary border-3 rounded-3xl bg-white py-2 px-3 hover:scale-105 transition-all shadow-[0px_10px_10px_rgba(0,0,0,0.4)]">
+        <div className="flex flex-col sm:flex-row w-full h-full space-x-2 select-none border-primary border-3 rounded-3xl bg-white py-2 px-3 hover:scale-105 transition-all shadow-[0px_10px_10px_rgba(0,0,0,0.4)]">
           <ProjectCardTrigger
             title={title}
             image={image}
@@ -45,7 +46,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[80%] font-roboto">
-        <div className="flex gap-5 items-center">
+        <div className="flex flex-col sm:flex-row gap-5 items-center">
           <img
             className="h-48 max-w-80 rounded-2xl object-contain"
             src={image}
@@ -55,7 +56,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
             <div>
               <h1 className="text-2xl font-bold font-rubik">Problem:</h1>
               <h2 className="font-bold font-rubik text-righ">{problemId}</h2>
-              <h2 className="font-bold font-rubik text-righ">Branch: {branch}</h2>
+              <h2 className="font-bold font-rubik text-righ">
+                Branch: {branch}
+              </h2>
               <p>{problem_statement}</p>
             </div>
             <div>
@@ -65,10 +68,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
         </div>
         <DialogFooter>
-          {!user && (<p className="text-red-500">Login to contribute</p>)}
-          {user?.role === "user" && status === "available" && (<Button className="bg-primary text-white">
-            Contribute
-          </Button>)}
+          {!user && <p className="text-red-500">Login to contribute</p>}
+          {user?.role === "user" && status === "available" && (
+            <Button className="bg-primary text-white" onClick={() => {navigate(`/contribute/${projectId}`)}}>Contribute</Button>
+          )}
           {user?.role === "user" && status === "taken" && (
             <Button className="bg-primary text-white" disabled>
               Taken

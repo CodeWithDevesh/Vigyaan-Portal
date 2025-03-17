@@ -87,6 +87,7 @@ const getProjects = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+
 const getProject = async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
 
@@ -108,6 +109,8 @@ const getProject = async (req: Request, res: Response): Promise<any> => {
     });
   }
 };
+
+
 const request = async (req: Request, res: Response): Promise<any> => {
   try {
     const { project_id, requested_by } = req.body;

@@ -13,6 +13,7 @@ import NotVerified from "./components/auth/NotVerified";
 import ChangePass from "./pages/Profile/changePass";
 import ForgotPass from "./pages/Profile/forgotPass";
 import Dashboard from "./pages/Dashboard";
+import Contribute from "./pages/Contribute";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
               <Route path="/profile/changePass" element={<ChangePass />} />
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/forgotPass" element={<ForgotPass />} />
+              <Route path="/contribute/:projectId" element={<Contribute />} />
               <Route
                 path="*"
                 element={

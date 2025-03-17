@@ -54,7 +54,7 @@ function LoginForm() {
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-[0px_35px_35px_rgba(0,0,0,.4)]">
       <form onSubmit={handleSubmit} className="p-6">
-        <div className="space-y-6">
+        <div className="space-y-6 text-xs lg:text-lg">
           <Input
             type={"email"}
             label={"Email"}
@@ -87,15 +87,17 @@ function LoginForm() {
           </button>
         </div>
       </form>
-      <div className=" mx-6 mb-5 text-sm font-rubik gap-2">
-        <p className="">
-          Don't have an account...{"    "}
-          <Link to={"/signup"} className="underline">
-            Sign Up
-          </Link>
-        </p>
-        <div>
-          <Link to={"/forgotPass"} className="underline">
+      <div className="flex flex-col justify-center mx-6 mb-5 text-xs lg:text-lg font-rubik gap-2">
+        <div className="flex flex-row justify-center">
+          <p className="">
+            Don't have an account...{"    "}
+            <Link to={"/signup"} className="text-xs lg:text-lg underline">
+              Sign Up
+            </Link>
+          </p>
+        </div>
+        <div className="flex flex-row justify-center">
+          <Link to={"/forgotPass"} className="text-xs lg:text-lg underline">
             Forgot Password
           </Link>
         </div>

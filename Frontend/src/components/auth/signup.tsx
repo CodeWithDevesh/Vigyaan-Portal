@@ -13,7 +13,7 @@ import {
 
 const Signup = ({ onClose = () => {} }) => {
   const currentYear = new Date().getFullYear();
-  const [step, setStep] = useState(1);
+  const [step, setStep] = useState(2);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -147,10 +147,10 @@ const Signup = ({ onClose = () => {} }) => {
 
         {/* Modal Header */}
         <div className="p-6">
-          <h2 className="text-xl font-bold text-primary">
+          <h2 className="text-center text-xl font-bold text-primary">
             {step === 1 ? "Create an Account" : "Verify Your Email"}
           </h2>
-          <p className="text-sm text-gray-600 mt-1">
+          <p className="text-center text-sm text-gray-600 mt-1">
             {step === 1
               ? "Join Vigyaan Portal to explore and collaborate on innovative projects"
               : "Enter the 6-digit verification code sent to your email"}
@@ -187,7 +187,7 @@ const Signup = ({ onClose = () => {} }) => {
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                    className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
                     required
                   />
                 </div>
@@ -212,7 +212,7 @@ const Signup = ({ onClose = () => {} }) => {
                     placeholder="your.email@college.edu"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                    className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
                     required
                   />
                 </div>
@@ -237,7 +237,7 @@ const Signup = ({ onClose = () => {} }) => {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                    className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
                     required
                   />
                 </div>
@@ -262,7 +262,7 @@ const Signup = ({ onClose = () => {} }) => {
                       onChange={(e) =>
                         handleSelectChange("branch", e.target.value)
                       }
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
+                      className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
                     >
                       <option value="">Select</option>
@@ -292,7 +292,7 @@ const Signup = ({ onClose = () => {} }) => {
                       onChange={(e) =>
                         handleSelectChange("grad_year", e.target.value)
                       }
-                      className="w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
+                      className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
                     >
                       <option value="">Select</option>
@@ -305,9 +305,9 @@ const Signup = ({ onClose = () => {} }) => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-end mt-4 text-lg font-rubik gap-2">
+              <div className="flex justify-center mt-4 text-xs lg:text-lg font-rubik gap-2">
                 <p>Already have an account...</p>
-                <Link to={"/login"} className="underline">
+                <Link to={"/login"} className="text-xs lg:text-lg underline">
                   Sign In
                 </Link>
               </div>
@@ -319,10 +319,10 @@ const Signup = ({ onClose = () => {} }) => {
                 <div className="flex items-start gap-3">
                   <CheckCircleIcon />
                   <div>
-                    <h4 className="font-medium text-black">
+                    <h4 className="text-sm lg:text-lg font-medium text-black">
                       Verification Required
                     </h4>
-                    <p className="text-sm text-gray-600">
+                    <p className="text-xs lg:text-sm text-gray-600">
                       We've sent a 6-digit code to{" "}
                       <span className="font-medium">{formData.email}</span>
                     </p>
@@ -344,10 +344,10 @@ const Signup = ({ onClose = () => {} }) => {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   maxLength={6}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black text-center text-lg tracking-widest"
+                  className="text-xs lg:text-lg w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black text-center text-lg tracking-widest"
                   required
                 />
-                <p className="text-sm text-gray-500 text-center">
+                <p className="text-xs lg:text-sm text-gray-500 text-center">
                   Didn't receive the code?{" "}
                   <button
                     onClick={async () => {
@@ -355,7 +355,7 @@ const Signup = ({ onClose = () => {} }) => {
                       if (otpSent) notify("OTP has been sent");
                     }}
                     type="button"
-                    className="text-black hover:text-gray-800 hover:cursor-pointer"
+                    className="text-xs lg:text-lg text-black hover:text-gray-800 hover:cursor-pointer"
                   >
                     Resend
                   </button>
@@ -369,7 +369,7 @@ const Signup = ({ onClose = () => {} }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full py-2 px-4 rounded-md bg-black text-white font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black"
+              className="text-xs lg:text-lg w-full py-2 px-4 rounded-md bg-black text-white font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black"
             >
               {isLoading
                 ? "Processing..."

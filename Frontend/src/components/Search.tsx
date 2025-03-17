@@ -12,6 +12,7 @@ function SearchBar({ onSearch }: { onSearch: (searchParams: string) => void }) {
         e.preventDefault();
         onSearch(inputValue);
       }}
+      className="w-full sm:w-sm"
     >
       <div className="flex items-center border-2 border-black px-2 py-1 rounded-2xl">
         <Search size={25} />
