@@ -377,12 +377,19 @@ const updateProfile = async (
     if (branch) updateObj.branch = branch;
     if (grad_year) updateObj.grad_year = grad_year;
 
-    const updatedUser = await userModel.findByIdAndUpdate(
-      req.userId,
-      { $set: updateObj },
-      { new: true, runValidators: true }
-    );
-
+    try{
+      await userModel.findByIdAndUpdate(
+        req.userId,
+        { $set: updateObj },
+        { new: true, runValidators: true }
+      );
+    } catch(err){
+      return res.json(500).json({
+        message: "Unable to update user. Please try again.",
+        error: err,
+        ok: false
+      })
+    }
     return res.status(200).json({
       message: "Profile Updated Successfully",
       ok: true,
