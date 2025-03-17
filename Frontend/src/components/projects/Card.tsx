@@ -65,6 +65,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           </div>
         </div>
         <DialogFooter>
+          {!user && (<p className="text-red-500">Login to contribute</p>)}
           {user?.role === "user" && status === "available" && (<Button className="bg-primary text-white">
             Contribute
           </Button>)}

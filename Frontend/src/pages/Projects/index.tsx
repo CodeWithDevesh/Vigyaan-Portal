@@ -27,7 +27,8 @@ const Projects = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
-  const navigate = useNavigate();
+  const [branch, setBranch] = useState("ALL");
+  const [status, setStatus] = useState("ALL");
 
   // Fetch projects
   useEffect(() => {
@@ -47,18 +48,29 @@ const Projects = () => {
   }, []);
 
   useEffect(() => {
+    let p = projects;
+
+    if (status !== "ALL") {
+      const filtered = p.filter((project) => project.status === status);
+      p = filtered;
+    }
+    if (branch !== "ALL") {
+      const filtered = p.filter((project) => project.branch === branch);
+      p = filtered;
+    }
+
     if (!search) {
-      setFilteredProjects(projects);
+      setFilteredProjects(p);
       return;
     }
 
-    const filtered = projects.filter((project) =>
+    const filtered = p.filter((project) =>
       Object.values(project).some((value) => {
         return value?.toString().toLowerCase().includes(search.toLowerCase());
       })
     );
     setFilteredProjects(filtered);
-  }, [search, projects]);
+  }, [status, branch, search, projects]);
 
   return (
     <div className="mt-[120px] min-h-[80vh] w-screen">
@@ -95,10 +107,14 @@ const Projects = () => {
                 id="barnch"
                 className="pl-10 pr-3 py-2 bg-transparent border-2 border-black rounded-xl focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                 defaultValue={"ALL"}
+                onChange={(e) => {
+                  setBranch(e.target.value);
+                }}
               >
                 <option value="ALL">ALL</option>
                 <option value="IT">IT</option>
                 <option value="CSE">CSE</option>
+                <option value="EE">EE</option>
               </select>
             </div>
             <div className="relative">
@@ -110,6 +126,9 @@ const Projects = () => {
                 id="status"
                 className="pl-10 pr-3 py-2 border-2 border-black rounded-xl focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                 defaultValue={"ALL"}
+                onChange={(e) => {
+                  setStatus(e.target.value);
+                }}
               >
                 <option value="ALL">ALL</option>
                 <option value="available">Available</option>
