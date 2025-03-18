@@ -8,7 +8,20 @@ interface AuthenticatedRequest extends Request {
     userId?: string;
     role?: string;
 }
-
+export const sendEmail = async (from: string, to: string, subject: string, message: string): Promise<Boolean>=>{
+    try{
+        const mailOptions = {
+            from: process.env.AUTH_EMAIL,
+            to: to,
+            subject: subject,
+            html: `<p><b>FROM: ${from}:</b></p><p>Message:<p>${message}</p></p>`
+        };
+        await transporter.sendMail(mailOptions);
+        return true;
+    } catch(err){
+        return false;
+    }
+}
 export const sendMail = async (req: AuthenticatedRequest, res: Response): Promise<any> =>{
     try{
     const {to, subject, message} = req.body;

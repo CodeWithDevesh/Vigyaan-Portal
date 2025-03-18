@@ -7,6 +7,8 @@ import {
 } from "../models/models";
 import { CustomRequest } from "..";
 import dotenv from "dotenv";
+import { sendEmail } from "./mail.controller";
+import { WriteConcernError } from "mongodb";
 dotenv.config();
 const projectRequest = async (req: Request, res: Response): Promise<any> => {
   const { project_id, requested_by } = req.body;
@@ -109,11 +111,9 @@ const getProject = async (req: Request, res: Response): Promise<any> => {
     });
   }
 };
-
-
-const request = async (req: Request, res: Response): Promise<any> => {
+const request = async (req: CustomRequest, res: Response): Promise<any> => {
   try {
-    const { project_id, requested_by } = req.body;
+    const { project_id, requested_by, message, subject } = req.body;
     const exists = await requestModel.findOne({project_id,requested_by});
     if(exists){
       return res.status(403).json({
@@ -125,7 +125,34 @@ const request = async (req: Request, res: Response): Promise<any> => {
       project_id,
       requested_by,
     });
+    const user = await userModel.findById(req.userId);
+    const project = await projectModel.findById(project_id);
+    const winner = await userModel.findById(project?.created_by);
+    if(!user){
+      return res.status(404).json({
+        message: "user not found",
+        ok: false
+      })
+    }
+    if(!winner){
+      return res.status(404).json({
+        message: "winner not found",
+        ok: false
+      })
+    }
+
     await newRequest.save();
+    const sent = await sendEmail(user.email,winner.email,subject,message);
+    if(!sent){
+      await requestModel.deleteOne({
+        project_id,
+        requested_by,
+      });
+      res.status(500).json({
+        message: "Error sending mail",
+        ok: false
+      })
+    }
     return res.json({
       message: "Requested Access.",
       ok: true,
