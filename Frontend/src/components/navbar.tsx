@@ -19,10 +19,6 @@ function Navbar() {
     if (!user) {
       return;
     }
-    //TODO: Fetch user data from backend and set profileIcon
-
-    // For now, using dummy data
-    // Replace with name later
     let svgCode = multiavatar(user.name);
     setProfileIcon(svgCode);
   }, [user]);

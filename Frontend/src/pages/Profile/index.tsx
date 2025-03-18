@@ -67,7 +67,6 @@ function Profile() {
   };
 
   const handleSaveClick = () => {
-    //TODO: Send the updated data to the backend
     api
       .post(`/users/me`, {
         name: fullName,
