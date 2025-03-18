@@ -33,9 +33,9 @@ const projectRequest = async (req: Request, res: Response): Promise<any> => {
     const obj = {
       project_id: project_id,
       requested_by: requested_by,
-    }
+    };
     const newReq = new requestModel(obj);
-    await newReq.save()
+    await newReq.save();
     return res.json({
       message: "Project requested successfully",
     });
@@ -89,6 +89,39 @@ const getProjects = async (req: Request, res: Response): Promise<any> => {
   }
 };
 
+const getMyProjects = async (
+  req: AuthenticatedRequest,
+  res: Response
+): Promise<any> => {
+  try {
+    const user = await userModel.findById(req.userId);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+    if (user.role === "winner") {
+      if (
+        !Array.isArray(user.projects_created) ||
+        user.projects_created.length === 0
+      ) {
+        return res.status(200).json({
+          message: "You haven't uploaded any projects.",
+        });
+      }
+      const projects = await projectModel.find({
+        _id: { $in: user.projects_created },
+      });
+      return res.json({
+        response: projects,
+      });
+    }
+  } catch (Error) {
+    return res.status(501).json({
+      message: "Error while fetching projects",
+    });
+  }
+};
 
 const getProject = async (req: Request, res: Response): Promise<any> => {
   const { id } = req.params;
@@ -115,12 +148,12 @@ const request = async (req: CustomRequest, res: Response): Promise<any> => {
   try {
     const { project_id, message, subject } = req.body;
     const requested_by = req.userId;
-    const exists = await requestModel.findOne({project_id,requested_by});
-    if(exists){
+    const exists = await requestModel.findOne({ project_id, requested_by });
+    if (exists) {
       return res.status(403).json({
         message: "Request Already Exists",
-        ok: false
-      })
+        ok: false,
+      });
     }
     const newRequest = new requestModel({
       project_id,
@@ -129,36 +162,37 @@ const request = async (req: CustomRequest, res: Response): Promise<any> => {
     const user = await userModel.findById(req.userId);
     const project = await projectModel.findById(project_id);
     const winner = await userModel.findById(project?.created_by);
-    if(!user){
+    if (!user) {
       return res.status(404).json({
         message: "user not found",
-        ok: false
-      })
+        ok: false,
+      });
     }
-    if(!winner){
+    if (!winner) {
       return res.status(404).json({
         message: "winner not found",
-        ok: false
-      })
+        ok: false,
+      });
     }
 
     await newRequest.save();
-    const sent = await sendEmail(user.email,winner.email,subject,message);
-    if(!sent){
+    const sent = await sendEmail(user.email, winner.email, subject, message);
+    if (!sent) {
       await requestModel.deleteOne({
         project_id,
         requested_by,
       });
       res.status(500).json({
         message: "Error sending mail",
-        ok: false
-      })
+        ok: false,
+      });
     }
     return res.json({
       message: "Requested Access.",
       ok: true,
     });
   } catch (err) {
+    console.log(err);
     return res.status(404).json({
       message: "An error occurred.",
       error: err,
@@ -185,9 +219,9 @@ const createProject = async (
         ok: false,
       });
     }
-    let imageUrl: string|null=null;
-    let filePath: string|null=null;
-    if(file){
+    let imageUrl: string | null = null;
+    let filePath: string | null = null;
+    if (file) {
       try {
         const admin = req.admin!;
         const bucket = admin.storage().bucket();
@@ -195,11 +229,11 @@ const createProject = async (
         const fileName = `${problemId}`;
         filePath = `${folderPath}/${fileName}`;
         const fileUpload = bucket.file(`${folderPath}/${fileName}`);
-    
+
         await fileUpload.save(file.buffer, {
           contentType: file.mimetype,
         });
-    
+
         const [url] = await fileUpload.getSignedUrl({
           action: "read",
           expires: "01-12-2026",
@@ -218,13 +252,13 @@ const createProject = async (
       description,
       branch,
       created_by: req.userId,
-      image: imageUrl
+      image: imageUrl,
     };
     const newProject = new projectModel(projectData);
-    try{
+    try {
       await newProject.save();
-    }catch(err){
-      if(filePath){
+    } catch (err) {
+      if (filePath) {
         const admin = req.admin!;
         await admin.storage().bucket().file(filePath).delete();
       }
@@ -240,7 +274,7 @@ const createProject = async (
       { new: true }
     );
     if (!updatedUser) {
-      if(filePath){
+      if (filePath) {
         const admin = req.admin!;
         await admin.storage().bucket().file(filePath).delete();
       }
@@ -275,17 +309,23 @@ const allRequests = async (
       ok: false,
     });
   }
-  if (!Array.isArray(user.projects_created) || user.projects_created.length === 0) {
+  if (
+    !Array.isArray(user.projects_created) ||
+    user.projects_created.length === 0
+  ) {
     return res.status(200).json({
       message: "The winner hasn't uploaded any projects.",
-      ok: false
+      ok: false,
     });
   }
-  const requests = await Promise.all(
-    user.projects_created.map(async (projectId) => {
-      return requestModel.find({ project_id: projectId , status: "pending"});
+  const requests = await requestModel
+    .find({
+      project_id: { $in: user.projects_created },
+      status: "pending",
     })
-  );
+    .populate("requested_by", "name email")
+    .populate("project_id", "title description");
+
   return res.status(200).json({
     requests: requests,
     ok: true,
@@ -311,11 +351,25 @@ const approveReq = async (
         ok: false,
       });
     }
+
+    if (project.status === "taken") {
+      return res.status(409).json({
+        message: "Project already taken.",
+        ok: false,
+      });
+    }
+
     const updatedProject = await projectModel.findByIdAndUpdate(
       request.project_id,
       { status: "taken", assigned_to: request.requested_by },
       { new: true }
     );
+
+    await requestModel.updateMany(
+      { project_id: request.project_id, _id: { $ne: id } },
+      { $set: { status: "denied" } }
+    );
+
     if (!updatedProject) {
       return res.status(500).json({
         message: "Error updating the project!",
@@ -408,18 +462,18 @@ const updateProfile = async (
     if (branch) updateObj.branch = branch;
     if (grad_year) updateObj.grad_year = grad_year;
 
-    try{
+    try {
       await userModel.findByIdAndUpdate(
         req.userId,
         { $set: updateObj },
         { new: true, runValidators: true }
       );
-    } catch(err){
+    } catch (err) {
       return res.json(500).json({
         message: "Unable to update user. Please try again.",
         error: err,
-        ok: false
-      })
+        ok: false,
+      });
     }
     return res.status(200).json({
       message: "Profile Updated Successfully",
@@ -446,4 +500,5 @@ export {
   denyReq,
   getProfile,
   updateProfile,
+  getMyProjects,
 };

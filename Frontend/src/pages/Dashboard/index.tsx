@@ -2,6 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../components/auth/AuthContext";
 import { useNavigate } from "react-router";
 import WinnersDashboard from "./Winner";
+import UserDashboard from "./User";
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -29,7 +30,8 @@ function Dashboard() {
 
   return (
     <div className="mt-[80px]">
-      {role === "winner" && <WinnersDashboard/>}
+      {role === "winner" && <WinnersDashboard />}
+      {role === "user" && <UserDashboard />}
     </div>
   );
 }

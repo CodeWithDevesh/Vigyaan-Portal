@@ -11,6 +11,7 @@ import {
   denyReq,
   getProfile,
   updateProfile,
+  getMyProjects,
 } from "../controllers/user.controller";
 import checkAuthentication from "../middleware/checkAuthentication";
 import userCheck from "../services/middlewares";
@@ -29,6 +30,8 @@ projectsRouter.get("/projects/:id", getProject); //
 projectsRouter.post("/requests", request); //
 projectsRouter.get("/users/me", getProfile); //
 projectsRouter.post("/users/me", updateProfile); //
+projectsRouter.get("/me/projects", getMyProjects); //
+
 //winner
 projectsRouter.post("/projects", userCheck,upload.single("file"), createProject); //
 projectsRouter.get("/requests", userCheck, allRequests); //

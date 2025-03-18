@@ -118,12 +118,12 @@ const requestSchema = new mongoose.Schema(
   {
     project_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Project",
+      ref: "Projects",
       required: true,
     },
     requested_by: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Users",
       required: true
     },
     status: {
@@ -138,14 +138,14 @@ const requestSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-// requestSchema.index({ project_id: 1, requested_by: 1 }, { unique: true });
+requestSchema.index({ project_id: 1, requested_by: 1 }, { unique: true });
 
 
 const notificationSchema = new mongoose.Schema(
   {
     user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: "Users",
       required: true,
     },
     type: {

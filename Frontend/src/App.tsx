@@ -14,6 +14,7 @@ import ChangePass from "./pages/Profile/changePass";
 import ForgotPass from "./pages/Profile/forgotPass";
 import Dashboard from "./pages/Dashboard";
 import Contribute from "./pages/Contribute";
+import CreateProject from "./pages/Projects/CreateProject";
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/forgotPass" element={<ForgotPass />} />
               <Route path="/contribute/:projectId" element={<Contribute />} />
+              <Route path="/create/project" element={<CreateProject />} />
               <Route
                 path="*"
                 element={
