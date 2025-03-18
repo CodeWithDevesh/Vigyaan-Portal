@@ -34,7 +34,6 @@ const Projects = () => {
     const fetchProjects = async () => {
       try {
         const response = await api.get(`/projects`);
-        console.log(response.data);
         setProjects(response.data.response);
       } catch (err) {
         setError("Failed to load projects.");

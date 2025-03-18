@@ -43,7 +43,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     api
       .get(`/users/me`)
       .then((res) => {
-        console.log(res.data); // TODO: Remove this line in Production
         if (res.data.ok && res.data.response) {
           setUser((prevUser) => ({
             ...(prevUser || {}),

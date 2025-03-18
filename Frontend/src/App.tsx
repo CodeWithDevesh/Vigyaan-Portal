@@ -43,7 +43,7 @@ function App() {
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/forgotPass" element={<ForgotPass />} />
               <Route path="/contribute/:projectId" element={<Contribute />} />
-              <Route path="/create/project" element={<CreateProject />} />
+              <Route path="/newProject" element={<CreateProject />} />
               <Route
                 path="*"
                 element={

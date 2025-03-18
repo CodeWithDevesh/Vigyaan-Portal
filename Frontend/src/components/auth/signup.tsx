@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link } from "react-router";
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { api } from "../../helpers/api";
 import {
@@ -10,10 +10,11 @@ import {
   MailIcon,
   UserIcon,
 } from "../icons";
+import { AuthContext } from "./AuthContext";
 
-const Signup = ({ onClose = () => {} }) => {
+const Signup = () => {
   const currentYear = new Date().getFullYear();
-  const [step, setStep] = useState(2);
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -23,10 +24,19 @@ const Signup = ({ onClose = () => {} }) => {
   });
   const [otp, setOtp] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const branches = ["CSE", "IT", "ECE", "EEE", "ME", "CE", "BT"];
   const years = Array.from({ length: 4 }, (_, i) => currentYear + i);
+
+  const { user, login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      if (user.verified) navigate("/dashboard");
+      else setStep(2);
+    }
+  }, [user]);
 
   interface FormData {
     name: string;
@@ -35,7 +45,6 @@ const Signup = ({ onClose = () => {} }) => {
     branch: string;
     grad_year: number;
   }
-
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -47,12 +56,11 @@ const Signup = ({ onClose = () => {} }) => {
   };
 
   const validateEmail = (email: string): boolean => {
-    return email.endsWith(".nitrr.ac.in"); // TODO: Uncomment this line in Production
+    return email.endsWith(".nitrr.ac.in");
   };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    setError("");
     setIsLoading(true);
 
     try {
@@ -75,41 +83,48 @@ const Signup = ({ onClose = () => {} }) => {
           })
           .catch((err) => {
             console.log(err);
-            setError(err.response.data.message || "Error while signing up");
+            toast.error(err.response.data.message || "Error while signing up");
           });
       } else {
         try {
           if (!otp) {
-            setError("Please enter your OTP");
+            toast.error("Please enter your OTP");
           } else {
             await api
               .post(`/auth/verify-otp`, {
                 otp,
               })
-              .then(() => {
-                alert(
-                  "Registration successful: Your account has been created!"
-                );
-                onClose();
+              .then((res) => {
+                if (res.data.ok) {
+                  toast.success(
+                    "Registration successful: Your account has been created!"
+                  );
+                  login();
+                  navigate("/dashboard");
+                } else {
+                  toast.error("Error while validating otp");
+                }
               })
               .catch((err) => {
-                setError(err.message || "Error while validating otp");
+                toast.error(
+                  err.response.data.message || "Error while validating otp"
+                );
                 console.log(err);
               });
           }
         } catch (err) {
           if (err instanceof Error) {
-            setError(err.message || "Something went wrong");
+            toast.error(err.message || "Something went wrong");
           } else {
-            setError("Something went wrong");
+            toast.error("Something went wrong");
           }
         }
       }
     } catch (err) {
       if (err instanceof Error) {
-        setError(err.message || "An error occurred during registration");
+        toast.error(err.message || "An error occurred during registration");
       } else {
-        setError("An error occurred during registration");
+        toast.error("An error occurred during registration");
       }
     } finally {
       setIsLoading(false);
@@ -124,7 +139,7 @@ const Signup = ({ onClose = () => {} }) => {
         return true;
       })
       .catch((err) => {
-        setError(err.message || "Error while requesting OTP");
+        toast.error(err.response.data.message || "Error while requesting OTP");
         return false;
       });
   };
@@ -134,8 +149,8 @@ const Signup = ({ onClose = () => {} }) => {
   };
 
   return (
-    <div className="min-h-[80vh] w-screen mt-[100px] flex items-center justify-center bg-opacity-50">
-      <div className="bg-white rounded-lg shadow-[0px_35px_35px_rgba(0,0,0,0.4)] w-full max-w-sm overflow-hidden">
+    <div className="min-h-[80vh] w-screen my-[100px] flex items-center justify-center bg-opacity-50">
+      <div className="bg-white rounded-lg shadow-[0px_35px_35px_rgba(0,0,0,0.4)] w-[90vw] max-w-sm overflow-hidden">
         {/* Progress Bar */}
         <div className="w-full h-1 bg-gray-200">
           <div
@@ -156,14 +171,6 @@ const Signup = ({ onClose = () => {} }) => {
               : "Enter the 6-digit verification code sent to your email"}
           </p>
         </div>
-
-        {/* Error Message */}
-        {error && (
-          <div className="bg-red-50 p-3 mx-6 rounded-md flex items-center gap-2">
-            <span>⚠️</span>
-            <p className="text-sm text-red-600">{error}</p>
-          </div>
-        )}
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="p-6">
@@ -187,7 +194,7 @@ const Signup = ({ onClose = () => {} }) => {
                     placeholder="John Doe"
                     value={formData.name}
                     onChange={handleChange}
-                    className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                    className="text-xs  sm:text-base w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
                     required
                   />
                 </div>
@@ -212,7 +219,7 @@ const Signup = ({ onClose = () => {} }) => {
                     placeholder="your.email@college.edu"
                     value={formData.email}
                     onChange={handleChange}
-                    className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                    className="text-xs sm:text-base w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
                     required
                   />
                 </div>
@@ -237,14 +244,14 @@ const Signup = ({ onClose = () => {} }) => {
                     placeholder="••••••••"
                     value={formData.password}
                     onChange={handleChange}
-                    className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
+                    className="text-xs sm:text-base w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black"
                     required
                   />
                 </div>
               </div>
 
               {/* Branch and Semester Fields */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <label
                     htmlFor="branch"
@@ -262,7 +269,7 @@ const Signup = ({ onClose = () => {} }) => {
                       onChange={(e) =>
                         handleSelectChange("branch", e.target.value)
                       }
-                      className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
+                      className="text-xs sm:text-base w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
                     >
                       <option value="">Select</option>
@@ -292,7 +299,7 @@ const Signup = ({ onClose = () => {} }) => {
                       onChange={(e) =>
                         handleSelectChange("grad_year", e.target.value)
                       }
-                      className="text-xs lg:text-lg w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
+                      className="text-xs sm:text-base w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black appearance-none"
                       required
                     >
                       <option value="">Select</option>
@@ -305,9 +312,9 @@ const Signup = ({ onClose = () => {} }) => {
                   </div>
                 </div>
               </div>
-              <div className="flex justify-center mt-4 text-xs lg:text-lg font-rubik gap-2">
+              <div className="flex justify-center mt-4 text-xs lg:text-sm font-rubik gap-2">
                 <p>Already have an account...</p>
-                <Link to={"/login"} className="text-xs lg:text-lg underline">
+                <Link to={"/login"} className="text-xs lg:text-sm underline">
                   Sign In
                 </Link>
               </div>
@@ -319,10 +326,10 @@ const Signup = ({ onClose = () => {} }) => {
                 <div className="flex items-start gap-3">
                   <CheckCircleIcon />
                   <div>
-                    <h4 className="text-sm lg:text-lg font-medium text-black">
+                    <h4 className="text-sm sm:text-lg font-medium text-black">
                       Verification Required
                     </h4>
-                    <p className="text-xs lg:text-sm text-gray-600">
+                    <p className="text-xs sm:text-sm text-gray-600">
                       We've sent a 6-digit code to{" "}
                       <span className="font-medium">{formData.email}</span>
                     </p>
@@ -344,7 +351,7 @@ const Signup = ({ onClose = () => {} }) => {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   maxLength={6}
-                  className="text-xs lg:text-lg w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black text-center text-lg tracking-widest"
+                  className="text-xs sm:text-base w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-black text-center tracking-widest"
                   required
                 />
                 <p className="text-xs lg:text-sm text-gray-500 text-center">
@@ -355,7 +362,7 @@ const Signup = ({ onClose = () => {} }) => {
                       if (otpSent) notify("OTP has been sent");
                     }}
                     type="button"
-                    className="text-xs lg:text-lg text-black hover:text-gray-800 hover:cursor-pointer"
+                    className="text-xs sm:text-sm text-black hover:text-gray-800 hover:cursor-pointer"
                   >
                     Resend
                   </button>
@@ -369,7 +376,7 @@ const Signup = ({ onClose = () => {} }) => {
             <button
               type="submit"
               disabled={isLoading}
-              className="text-xs lg:text-lg w-full py-2 px-4 rounded-md bg-black text-white font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black"
+              className="text-xs sm:text-base w-full py-2 px-4 rounded-md bg-black text-white font-medium hover:bg-gray-800 focus:outline-none focus:ring-1 focus:ring-black"
             >
               {isLoading
                 ? "Processing..."

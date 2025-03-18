@@ -8,7 +8,6 @@ import {
 import { CustomRequest } from "..";
 import dotenv from "dotenv";
 import { sendEmail } from "./mail.controller";
-import { WriteConcernError } from "mongodb";
 dotenv.config();
 const projectRequest = async (req: Request, res: Response): Promise<any> => {
   const { project_id, requested_by } = req.body;
@@ -111,6 +110,21 @@ const getMyProjects = async (
       }
       const projects = await projectModel.find({
         _id: { $in: user.projects_created },
+      });
+      return res.json({
+        response: projects,
+      });
+    } else if (user.role === "user") {
+      if (
+        !Array.isArray(user.projects_assigned) ||
+        user.projects_assigned.length === 0
+      ) {
+        return res.status(200).json({
+          message: "You haven't taken any projects.",
+        });
+      }
+      const projects = await projectModel.find({
+        _id: { $in: user.projects_assigned },
       });
       return res.json({
         response: projects,
@@ -301,35 +315,68 @@ const allRequests = async (
   req: AuthenticatedRequest,
   res: Response
 ): Promise<any> => {
-  //wrong
-  const user = await userModel.findById(req.userId);
-  if (!user) {
-    return res.status(404).json({
-      message: "User not found",
-      ok: false,
-    });
-  }
-  if (
-    !Array.isArray(user.projects_created) ||
-    user.projects_created.length === 0
-  ) {
-    return res.status(200).json({
-      message: "The winner hasn't uploaded any projects.",
-      ok: false,
-    });
-  }
-  const requests = await requestModel
-    .find({
-      project_id: { $in: user.projects_created },
-      status: "pending",
-    })
-    .populate("requested_by", "name email")
-    .populate("project_id", "title description");
+  if (req.role === "winner")
+    try {
+      const user = await userModel.findById(req.userId);
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+          ok: false,
+        });
+      }
+      if (
+        !Array.isArray(user.projects_created) ||
+        user.projects_created.length === 0
+      ) {
+        return res.status(200).json({
+          message: "The winner hasn't uploaded any projects.",
+          ok: false,
+        });
+      }
+      const requests = await requestModel
+        .find({
+          project_id: { $in: user.projects_created },
+          status: "pending",
+        })
+        .populate("requested_by", "name email")
+        .populate("project_id", "title description");
 
-  return res.status(200).json({
-    requests: requests,
-    ok: true,
-  });
+      return res.status(200).json({
+        requests: requests,
+        ok: true,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        message: "Some error occured.",
+        error: err,
+        ok: false,
+      });
+    }
+  else if (req.role === "user") {
+    try {
+      const user = await userModel.findById(req.userId);
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+          ok: false,
+        });
+      }
+      const requests = await requestModel
+        .find({ requested_by: req.userId })
+        .populate("project_id", "title description")
+        .populate("requested_by", "name email");
+      return res.status(200).json({
+        requests: requests,
+        ok: true,
+      });
+    } catch (err) {
+      return res.status(500).json({
+        message: "Some error occured.",
+        error: err,
+        ok: false,
+      });
+    }
+  }
 };
 const approveReq = async (
   req: AuthenticatedRequest,
@@ -359,9 +406,23 @@ const approveReq = async (
       });
     }
 
+    const user = await userModel.findById(request.requested_by);
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+        ok: false,
+      });
+    }
+
     const updatedProject = await projectModel.findByIdAndUpdate(
       request.project_id,
       { status: "taken", assigned_to: request.requested_by },
+      { new: true }
+    );
+
+    const updatedUser = await userModel.findByIdAndUpdate(
+      request.requested_by,
+      { $push: { projects_assigned: request.project_id } },
       { new: true }
     );
 
@@ -376,6 +437,7 @@ const approveReq = async (
         ok: false,
       });
     }
+
     request.status = "approved";
     await request.save();
     return res.status(200).json({

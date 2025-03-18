@@ -9,6 +9,7 @@ import { useContext } from "react";
 import { AuthContext } from "../auth/AuthContext";
 import { Button } from "../ui/button";
 import { useNavigate } from "react-router";
+import { DialogTitle } from "@radix-ui/react-dialog";
 
 interface ProjectCardProps {
   projectId: string;
@@ -46,6 +47,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
         </div>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[80%] font-roboto">
+        <DialogTitle></DialogTitle>
         <div className="flex flex-col sm:flex-row gap-5 items-center">
           <img
             className="h-48 max-w-80 rounded-2xl object-contain"

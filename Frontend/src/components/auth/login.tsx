@@ -53,14 +53,20 @@ function LoginForm() {
 
   return (
     <div className="bg-white rounded-lg overflow-hidden shadow-[0px_35px_35px_rgba(0,0,0,.4)]">
-      <form onSubmit={handleSubmit} className="p-6">
-        <div className="space-y-6 text-xs lg:text-lg">
+      <div className="p-6">
+        <h2 className="text-center font-rubik text-3xl font-bold text-primary">Login</h2>
+      </div>
+
+      <form onSubmit={handleSubmit} className="p-6 pt-0">
+        <div className="space-y-6 text-xs sm:text-base">
           <Input
             type={"email"}
             label={"Email"}
             icon={<Mail size={20} />}
             value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setEmail(e.target.value)
+            }
             id={"mail"}
             placeholder={"namebtech@branch.nitrr.ac.in"}
           />
@@ -69,7 +75,9 @@ function LoginForm() {
             label={"Password"}
             icon={<KeyRound size={20} />}
             value={password}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+              setPassword(e.target.value)
+            }
             id={"password"}
             placeholder={"namebtech@branch.nitrr.ac.in"}
           />
@@ -88,16 +96,16 @@ function LoginForm() {
         </div>
       </form>
       <div className="flex flex-col justify-center mx-6 mb-5 text-xs lg:text-lg font-rubik gap-2">
-        <div className="flex flex-row justify-center">
-          <p className="">
+        <div className="flex flex-row justify-end">
+          <p className="text-xs sm:text-sm">
             Don't have an account...{"    "}
-            <Link to={"/signup"} className="text-xs lg:text-lg underline">
+            <Link to={"/signup"} className="text-xs sm:text-sm underline">
               Sign Up
             </Link>
           </p>
         </div>
-        <div className="flex flex-row justify-center">
-          <Link to={"/forgotPass"} className="text-xs lg:text-lg underline">
+        <div className="flex flex-row justify-end">
+          <Link to={"/forgotPass"} className="text-xs sm:text-sm underline">
             Forgot Password
           </Link>
         </div>

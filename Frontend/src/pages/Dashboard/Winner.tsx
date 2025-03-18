@@ -46,7 +46,6 @@ const WinnersDashboard = () => {
       try {
         const response = await api.get(`/requests`);
         setRequests(response.data.requests);
-        console.log(response.data.requests);
         const response2 = await api.get(`/me/projects`);
         setLoadedProjects(response2.data.response);
       } catch (err) {
@@ -65,7 +64,6 @@ const WinnersDashboard = () => {
       );
       return { ...project, requests: projectRequests };
     });
-    console.log(updatedProjects);
     setProjects(updatedProjects);
   }, [loadedProjects]);
 

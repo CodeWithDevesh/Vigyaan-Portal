@@ -14,7 +14,7 @@ function NotVerified() {
             <p className="ml-2 text-lg font-roboto">Email Not Verified!!!</p>
           </div>
           <Link
-            to="/verify" /* adjust as needed */
+            to="/signup" /* adjust as needed */
             className="ml-auto mr-5 wiggle bg-white text-red-600 px-4 py-1 rounded-xl font-medium hover:scale-110 active:scale-90 transition"
           >
             Verify Now

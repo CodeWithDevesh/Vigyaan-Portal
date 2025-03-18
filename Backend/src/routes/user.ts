@@ -31,10 +31,10 @@ projectsRouter.post("/requests", request); //
 projectsRouter.get("/users/me", getProfile); //
 projectsRouter.post("/users/me", updateProfile); //
 projectsRouter.get("/me/projects", getMyProjects); //
+projectsRouter.get("/requests", allRequests); //
 
 //winner
 projectsRouter.post("/projects", userCheck,upload.single("file"), createProject); //
-projectsRouter.get("/requests", userCheck, allRequests); //
 projectsRouter.post("/requests/:id/approve", userCheck, approveReq); //
 projectsRouter.post("/requests/:id/deny", userCheck, denyReq);
 
