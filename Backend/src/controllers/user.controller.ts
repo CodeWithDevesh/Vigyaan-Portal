@@ -113,7 +113,8 @@ const getProject = async (req: Request, res: Response): Promise<any> => {
 };
 const request = async (req: CustomRequest, res: Response): Promise<any> => {
   try {
-    const { project_id, requested_by, message, subject } = req.body;
+    const { project_id, message, subject } = req.body;
+    const requested_by = req.userId;
     const exists = await requestModel.findOne({project_id,requested_by});
     if(exists){
       return res.status(403).json({
