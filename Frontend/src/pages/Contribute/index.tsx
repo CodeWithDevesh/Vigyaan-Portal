@@ -1,9 +1,10 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useContext, useEffect, useRef, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 
 import { api } from "@/helpers/api";
 import { toast } from "react-toastify";
 import { ConfirmDialog } from "./ConfirmDialog";
+import { AuthContext } from "@/components/auth/AuthContext";
 
 interface Project {
   _id: string;
@@ -25,9 +26,26 @@ function Contribute() {
   const [project, setProject] = useState<Project | null>(null);
   const [message, setMessage] = useState("");
 
-  //TODO: Delayed navigate to login if user is not logged in
-  //TODO: Fetch project details using projectId
-  //TODO: use backends request endpoint to create a request to contribute to the project
+  const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    if (!user) {
+      timeoutRef.current = setTimeout(() => {
+        navigate("/login");
+      }, 1000);
+    } else {
+      if (user.role != "user") {
+        navigate("/home");
+      }
+    }
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [user, navigate]);
 
   useEffect(() => {
     api
@@ -62,7 +80,7 @@ function Contribute() {
       })
       .catch((err) => {
         console.error(err);
-        toast.error("Failed to send request");
+        toast.error(err.response?.data?.message || "Failed to send request");
       });
   };
 
